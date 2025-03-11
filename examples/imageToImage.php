@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Daavelar\PhpRunwareSDK\Runware;
 
-$runware = new Runware('uZ7zT4r8xZW55R1YBYArySPqkiQrFc3O');
+$runware = new Runware('your_api_key');
 
 $imageUrl = $runware
     ->withHeight(512)
@@ -16,6 +16,6 @@ $imageUrl = $runware
     ->withOutputType('URL')
     ->withOutputFormat('PNG')
     ->withNegativePrompt('low quality, blurred')
-    ->textToImage('1girl, solo, in a room, dark, underwear, big breasts, long hair, blue eyes, looking at viewer, cg, 8k, high quality, photo realistic');
+    ->imageToImage('1girl, solo, in a room, long hair, blue eyes, looking at viewer, cg, 8k, high quality, photo realistic', 'https://i.pinimg.com/originals/00/00/00/00000000000000000000000000000000.jpg', 0.8);
 
 echo $imageUrl;
