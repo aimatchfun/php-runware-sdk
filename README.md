@@ -5,7 +5,7 @@ A PHP wrapper for the Runware AI API, allowing simple and efficient AI image gen
 ## Installation
 
 ```bash
-composer require runware/php-runware
+composer require runware/php-runware-sdk
 ```
 
 ## Usage
