@@ -1,0 +1,17 @@
+{
+    "name": "daavelar/php-runware",
+    "autoload": {
+        "psr-4": {
+            "Daavelar\\PhpRunware\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "diego.avelar",
+            "email": "diego.avelar@olist.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.9"
+    }
+}
