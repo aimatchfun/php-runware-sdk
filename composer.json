@@ -1,5 +1,5 @@
 {
-    "name": "daavelar/php-runware",
+    "name": "daavelar/php-runware-sdk",
     "autoload": {
         "psr-4": {
             "Daavelar\\PhpRunwareSDK\\": "src/"
