@@ -2,7 +2,7 @@
     "name": "daavelar/php-runware",
     "autoload": {
         "psr-4": {
-            "Daavelar\\PhpRunware\\": "src/"
+            "Daavelar\\PhpRunwareSDK\\": "src/"
         }
     },
     "authors": [

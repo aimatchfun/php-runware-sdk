@@ -1,6 +1,6 @@
 <?php
 
-namespace Runware;
+namespace Daavelar\PhpRunwareSDK;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
