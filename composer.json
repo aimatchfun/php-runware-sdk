@@ -1,17 +1,19 @@
 {
-    "name": "daavelar/php-runware-sdk",
-    "autoload": {
-        "psr-4": {
-            "Daavelar\\PhpRunwareSDK\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "diego.avelar",
-            "email": "diegoarmando2011@gmail.com"
-        }
-    ],
-    "require": {
-        "guzzlehttp/guzzle": "^7.9"
+  "name": "daavelar/php-runware-sdk",
+  "autoload": {
+    "psr-4": {
+      "Daavelar\\PhpRunwareSDK\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "diego.avelar",
+      "email": "diegoarmando2011@gmail.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^7.9",
+    "ext-json": "*",
+    "ramsey/uuid": "^4.7"
+  }
 }

@@ -9,13 +9,14 @@ $runware = new Runware('your_api_key');
 $imageUrl = $runware
     ->withHeight(512)
     ->withWidth(512)
-    ->model('civitai:372465@534642')
-    ->withSteps(20)
+    ->model('runware:101@1')
+    ->withSteps(40)
     ->withCFGScale(7.5)
-    ->withNumberResults(5)
+    ->withNsfw(true)
+    ->addLora('civitai:128568@747534')
+    ->withNumberResults(1)
     ->withOutputType('URL')
     ->withOutputFormat('PNG')
     ->withNegativePrompt('low quality, blurred')
-    ->textToImage('1girl, solo, in a room, long hair, blue eyes, looking at viewer, cg, 8k, high quality, photo realistic');
-
+    ->textToImage('pretty woman with short white hair, busty breasts, oiled body, oiledskin, alicedantas');
 echo $imageUrl;
