@@ -13,10 +13,10 @@ $imageUrl = $runware
     ->withSteps(40)
     ->withCFGScale(7.5)
     ->withNsfw(true)
-    ->addLora('civitai:128568@747534')
+    ->addLora('some-lora-id')
     ->withNumberResults(1)
     ->withOutputType('URL')
     ->withOutputFormat('PNG')
     ->withNegativePrompt('low quality, blurred')
-    ->textToImage('pretty woman with short white hair, busty breasts, oiled body, oiledskin, alicedantas');
+    ->textToImage('a astronaut in a spaceship');
 echo $imageUrl;

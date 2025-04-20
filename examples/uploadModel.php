@@ -2,10 +2,10 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Daavelar\PhpRunwareSDK\UploadLora;
+use Daavelar\PhpRunwareSDK\UploadModel;
 use Ramsey\Uuid\Uuid;
 
-$uploader = new UploadLora('your_api_key');
+$uploader = new UploadModel('your_api_key');
 
 $resultado = $uploader->upload([
     'air' => 'air-of-your-model',
