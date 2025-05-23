@@ -1,6 +1,6 @@
 <?php
 
-namespace Daavelar\PhpRunwareSDK;
+namespace AIMatchFun\PhpRunwareSDK;
 
 class IPAdapter
 {

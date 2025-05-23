@@ -1,10 +1,11 @@
 <?php
 
-namespace Daavelar\PhpRunwareSDK;
+namespace AIMatchFun\PhpRunwareSDK;
 
-enum FluxScheduler: string
+enum Scheduler: string
 {
     case EULER = 'Euler';
+    case EULER_A = 'EulerAncestralDiscreteScheduler';
     case FLOW_MATCH_EULER = 'FlowMatch Euler';
     case DPM_PLUS_PLUS = 'DPM++';
     case DPM_PLUS_PLUS_SDE = 'DPM++ SDE';
@@ -29,6 +30,24 @@ enum FluxScheduler: string
     case DPM_PLUS_PLUS_3M_BETA = 'DPM++ 3M Beta';
     case DPM_PLUS_PLUS_3M_EXPONENTIAL = 'DPM++ 3M Exponential';
     case DPM_PLUS_PLUS_3M_KARRAS = 'DPM++ 3M Karras';
+    case DDIM = 'DDIM';
+    case DDPM = 'DDPM';
+    case DEIS_MULTISTEP = 'DEIS Multistep';
+    case DPM_SOLVER_SINGLE_STEP = 'DPM-Solver Single-step';
+    case DPM_SOLVER_MULTI_STEP = 'DPM-Solver Multi-step';
+    case DPM_SOLVER_MULTI_STEP_INVERSE = 'DPM-Solver Multi-step Inverse';
+    case EDM_EULER = 'EDM Euler';
+    case EDM_DPM_SOLVER_MULTI_STEP = 'EDM DPM-Solver Multi-step';
+    case HEUN = 'Heun';
+    case IPNDM = 'IPNDM';
+    case KDPM2 = 'KDPM2';
+    case KDPM2_ANCESTRAL = 'KDPM2 Ancestral';
+    case LCM = 'LCM';
+    case LMS = 'LMS';
+    case PNDM = 'PNDM';
+    case TCD = 'TCD';
+    case UNIPC = 'UniPC';
+    case UNIPC_MULTISTEP = 'UniPC Multistep';
 
     /**
      * Get all available FLUX schedulers
@@ -42,50 +61,6 @@ enum FluxScheduler: string
 
     /**
      * Check if a scheduler is valid for FLUX
-     *
-     * @param string $scheduler
-     * @return bool
-     */
-    public static function isValid(string $scheduler): bool
-    {
-        return in_array($scheduler, self::getAll());
-    }
-}
-
-enum StableDiffusionScheduler: string
-{
-    case DDIM = 'DDIM';
-    case DDPM = 'DDPM';
-    case DEIS_MULTISTEP = 'DEIS Multistep';
-    case DPM_SOLVER_SINGLE_STEP = 'DPM-Solver Single-step';
-    case DPM_SOLVER_MULTI_STEP = 'DPM-Solver Multi-step';
-    case DPM_SOLVER_MULTI_STEP_INVERSE = 'DPM-Solver Multi-step Inverse';
-    case EDM_EULER = 'EDM Euler';
-    case EDM_DPM_SOLVER_MULTI_STEP = 'EDM DPM-Solver Multi-step';
-    case EULER_ANCESTRAL = 'Euler Ancestral';
-    case HEUN = 'Heun';
-    case IPNDM = 'IPNDM';
-    case KDPM2 = 'KDPM2';
-    case KDPM2_ANCESTRAL = 'KDPM2 Ancestral';
-    case LCM = 'LCM';
-    case LMS = 'LMS';
-    case PNDM = 'PNDM';
-    case TCD = 'TCD';
-    case UNIPC = 'UniPC';
-    case UNIPC_MULTISTEP = 'UniPC Multistep';
-
-    /**
-     * Get all available Stable Diffusion schedulers
-     *
-     * @return array
-     */
-    public static function getAll(): array
-    {
-        return array_map(fn($case) => $case->value, self::cases());
-    }
-
-    /**
-     * Check if a scheduler is valid for Stable Diffusion
      *
      * @param string $scheduler
      * @return bool

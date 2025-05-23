@@ -1,8 +1,8 @@
 <?php
 
-namespace Daavelar\PhpRunwareSDK;
+namespace AIMatchFun\PhpRunwareSDK;
 
-use Daavelar\Runware\ControlMode;   
+use AIMatchFun\Runware\ControlMode;   
 
 enum ControlNet: string
 {

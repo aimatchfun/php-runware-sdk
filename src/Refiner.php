@@ -1,10 +1,10 @@
 <?php
 
-namespace Daavelar\PhpRunwareSDK;
+namespace AIMatchFun\PhpRunwareSDK;
 
 class Refiner
 {
-    private RunwareModelAir $model;
+    private ModelAir $model;
     private int $startStep;
     private int $startStepPercentage;
 }

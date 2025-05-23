@@ -1,21 +1,21 @@
 <?php
 
-namespace Daavelar\PhpRunwareSDK;
+namespace AIMatchFun\PhpRunwareSDK;
 
-class OutputFormat
+enum OutputFormat :string
 {
     /**
      * JPEG/JPG image format (default)
      */
-    const JPG = 'JPG';
+    case JPG = 'JPG';
 
     /**
      * PNG image format
      */
-    const PNG = 'PNG';
+    case PNG = 'PNG';
 
     /**
      * WebP image format
      */
-    const WEBP = 'WEBP';
+    case WEBP = 'WEBP';
 } 

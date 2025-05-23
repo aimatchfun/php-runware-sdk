@@ -2,18 +2,19 @@
   "name": "daavelar/php-runware-sdk",
   "autoload": {
     "psr-4": {
-      "Daavelar\\PhpRunwareSDK\\": "src/"
+      "AIMatchFun\\PhpRunwareSDK\\": "src/"
     }
   },
   "authors": [
     {
-      "name": "diego.avelar",
-      "email": "diegoarmando2011@gmail.com"
+      "name": "diego",
+      "email": "diego@aimatch.fun"
     }
   ],
   "require": {
     "guzzlehttp/guzzle": "^7.9",
     "ext-json": "*",
-    "ramsey/uuid": "^4.7"
+    "ramsey/uuid": "^4.7",
+    "illuminate/http": "^12.15"
   }
 }

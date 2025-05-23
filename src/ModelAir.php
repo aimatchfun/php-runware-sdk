@@ -1,8 +1,8 @@
 <?php
 
-namespace Daavelar\PhpRunwareSDK;
+namespace AIMatchFun\PhpRunwareSDK;
 
-enum RunwareModelAir: string
+enum ModelAir: string
 {
     case PONY_REALISM = 'civitai:372465@534642';
     case REAL_DREAM_SDXL_PONY_14 = 'civitai:153568@1308507';
@@ -17,4 +17,6 @@ enum RunwareModelAir: string
     case GODDESS_OF_REALISM = 'civitai:212737@714766';
     case REALISM_BY_STABLE_YOGI = 'civitai:166609@775007';
     case PONY_REALISM_2_2_4S = 'civitai:372465@987210';
+    case FLUX = 'civitai:618692@691639';
+    case CYBERREALISTIC_PONY_V8 = 'civitai:443821@1346181';
 }

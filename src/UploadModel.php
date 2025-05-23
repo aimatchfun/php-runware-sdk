@@ -33,14 +33,19 @@ class UploadModel
      * @return string Resposta da API
      * @throws GuzzleException
      */
-    public function upload(array $params): string
+    public function upload($air, $uniqueIdentifier, $name, $version, $downloadURL, $architecture = 'pony'): string
     {
-        $defaultParams = [
+        $params = [
+            "air" => $air,
+            "uniqueIdentifier" => $uniqueIdentifier,
+            "name" => $name,
+            "version" => $version,
+            "downloadURL" => $downloadURL,
             "taskType" => "modelUpload",
             "taskUUID" => Uuid::uuid4()->toString(),
             "category" => "checkpoint",
             "type" => "base",
-            "architecture" => "flux1d",
+            "architecture" => $architecture,
             "format" => "safetensors",
             "private" => true,
             "defaultCFG" => 3.5,
@@ -49,24 +54,8 @@ class UploadModel
             "defaultStrength" => 1.0,
         ];
 
-        $data = array_merge($defaultParams, $params);
-
-        $requiredFields = [
-            'air', 
-            'uniqueIdentifier', 
-            'name', 
-            'version', 
-            'downloadURL'
-        ];
-        
-        foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
-                throw new InvalidArgumentException("O campo '$field' é obrigatório");
-            }
-        }
-
         $response = $this->client->post('/v1/tasks', [
-            'json' => [$data],
+            'json' => [$params],
         ]);
 
         return $response->getBody()->getContents();
