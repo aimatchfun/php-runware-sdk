@@ -1,20 +1,41 @@
 {
-  "name": "daavelar/php-runware-sdk",
+  "name": "aimatchfun/php-runware-sdk",
+  "description": "PHP SDK for Runware AI - Powerful image generation and manipulation",
+  "type": "library",
+  "keywords": ["runware", "ai", "image-generation", "artificial-intelligence", "php", "sdk"],
+  "homepage": "https://github.com/aimatchfun/php-runware-sdk",
+  "license": "MIT",
   "autoload": {
     "psr-4": {
-      "AIMatchFun\\PhpRunwareSDK\\": "src/"
+      "AiMatchFun\\PhpRunwareSDK\\": "src/"
     }
   },
   "authors": [
     {
-      "name": "diego",
-      "email": "diego@aimatch.fun"
+      "name": "Diego Avelar",
+      "email": "diego@aimatch.fun",
+      "homepage": "https://github.com/daavelar",
+      "role": "Developer"
     }
   ],
   "require": {
+    "php": "^8.0",
     "guzzlehttp/guzzle": "^7.9",
     "ext-json": "*",
     "ramsey/uuid": "^4.7",
     "illuminate/http": "^12.15"
-  }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0|^11.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace AIMatchFun\PhpRunwareSDK;
+namespace AiMatchFun\PhpRunwareSDK;
 
 use AIMatchFun\Runware\ControlMode;   
 

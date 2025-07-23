@@ -1,14 +1,14 @@
 <?php
 
-namespace AIMatchFun\PhpRunwareSDK;
+namespace AiMatchFun\PhpRunwareSDK;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
-use AIMatchFun\PhpRunwareSDK\OutputType;
-use AIMatchFun\PhpRunwareSDK\OutputFormat;
-use AIMatchFun\PhpRunwareSDK\PromptWeighting;
-use AIMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\OutputType;
+use AiMatchFun\PhpRunwareSDK\OutputFormat;
+use AiMatchFun\PhpRunwareSDK\PromptWeighting;
+use AiMatchFun\PhpRunwareSDK\ModelAir;
 use Exception;
 use InvalidArgumentException;
 

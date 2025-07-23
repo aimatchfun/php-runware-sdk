@@ -1,6 +1,6 @@
 <?php
 
-namespace AIMatchFun\PhpRunwareSDK;
+namespace AiMatchFun\PhpRunwareSDK;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Http;

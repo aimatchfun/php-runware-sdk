@@ -5,18 +5,18 @@ A PHP wrapper for the Runware AI API, allowing simple and efficient AI image gen
 ## Installation
 
 ```bash
-composer require runware/php-runware-sdk
+composer require aimatchfun/php-runware-sdk
 ```
 
 ## Basic Usage
 
 ```php
-use AIMatchFun\PhpRunwareSDK\TextToImage;
-use AIMatchFun\PhpRunwareSDK\OutputType;
-use AIMatchFun\PhpRunwareSDK\OutputFormat;
-use AIMatchFun\PhpRunwareSDK\FluxScheduler;
-use AIMatchFun\PhpRunwareSDK\ModelAir;
-use AIMatchFun\PhpRunwareSDK\PromptWeighting;
+use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\OutputType;
+use AiMatchFun\PhpRunwareSDK\OutputFormat;
+use AiMatchFun\PhpRunwareSDK\FluxScheduler;
+use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 
 $textToImage = new TextToImage('your_api_key');
 
@@ -39,8 +39,8 @@ $result = $textToImage
 ### Text to Image Generation with Different Models
 
 ```php
-use AIMatchFun\PhpRunwareSDK\TextToImage;
-use AIMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\ModelAir;
 
 $textToImage = new TextToImage('your_api_key');
 
@@ -60,8 +60,8 @@ $result = $textToImage
 ### Output Types and Formats
 
 ```php
-use AIMatchFun\PhpRunwareSDK\OutputType;
-use AIMatchFun\PhpRunwareSDK\OutputFormat;
+use AiMatchFun\PhpRunwareSDK\OutputType;
+use AiMatchFun\PhpRunwareSDK\OutputFormat;
 
 // Get result as URL
 $result = $textToImage
@@ -88,7 +88,7 @@ $result = $textToImage
 ### Using Different Schedulers
 
 ```php
-use AIMatchFun\PhpRunwareSDK\FluxScheduler;
+use AiMatchFun\PhpRunwareSDK\FluxScheduler;
 
 // Using DPM++ 2M scheduler
 $result = $textToImage
@@ -112,7 +112,7 @@ $result = $textToImage
 ### Advanced Configuration
 
 ```php
-use AIMatchFun\PhpRunwareSDK\PromptWeighting;
+use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 
 // Using advanced settings with prompt weighting
 $result = $textToImage
@@ -160,7 +160,7 @@ $result = $textToImage
 ### Using Custom Models
 
 ```php
-use AIMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\ModelAir;
 
 // Using a specific model version
 $result = $textToImage
@@ -178,7 +178,7 @@ $result = $textToImage
 ### Uploading LoRA Models
 
 ```php
-use Daavelar\PhpRunwareSDK\UploadLora;
+use AiMatchFun\PhpRunwareSDK\UploadLora;
 use Ramsey\Uuid\Uuid;
 
 $uploader = new UploadLora('your_api_key');
@@ -199,7 +199,7 @@ $result = $uploader->upload([
 ### Uploading Custom Models
 
 ```php
-use Daavelar\PhpRunwareSDK\UploadModel;
+use AiMatchFun\PhpRunwareSDK\UploadModel;
 use Ramsey\Uuid\Uuid;
 
 $uploader = new UploadModel('your_api_key');
