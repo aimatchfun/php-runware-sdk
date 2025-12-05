@@ -9,6 +9,7 @@ use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\Scheduler;
 use Exception;
 use InvalidArgumentException;
 
@@ -17,8 +18,8 @@ class TextToImage
     private string $apiKey;
     private string $apiUrl = 'https://api.runware.ai/v1';
     private string $positivePrompt = '';
-    private int $height = 512;
-    private int $width = 512;
+    private int $height = 1024;
+    private int $width = 1024;
     private string $model = 'civitai:618692@691639';
     private int $steps = 20;
     private float $CFGScale = 7.0;
@@ -42,7 +43,7 @@ class TextToImage
     private bool $deepCache = false;
     private int $deepCacheInterval = 3;
     private int $deepCacheBranchId = 0;
-    private int $clipSkip = 1;
+    private int $clipSkip = 0;
 
     public function __construct(string $apiKey)
     {
@@ -254,9 +255,9 @@ class TextToImage
      * @param string $model The model identifier
      * @return self
      */
-    public function modelAir(string $model): self
+    public function modelAir(ModelAir $model): self
     {
-        $this->model = $model;
+        $this->model = $model->value;
         return $this;
     }
 
