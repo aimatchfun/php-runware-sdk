@@ -19,7 +19,7 @@
     }
   ],
   "require": {
-    "php": "^8.0",
+    "php": "^8.4",
     "guzzlehttp/guzzle": "^7.9",
     "ext-json": "*",
     "ramsey/uuid": "^4.7",
