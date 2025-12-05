@@ -24,7 +24,7 @@ $result = $textToImage
     ->positivePrompt('A beautiful sunset over a calm ocean')
     ->height(768)
     ->width(1024)
-    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_14->value)
+    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_14)
     ->steps(30)
     ->cfgScale(8.5)
     ->numberResults(1)
@@ -47,13 +47,13 @@ $textToImage = new TextToImage('your_api_key');
 // Using Pony Realism model
 $result = $textToImage
     ->positivePrompt('A serene mountain landscape at sunset')
-    ->modelAir(ModelAir::PONY_REALISM->value)
+    ->modelAir(ModelAir::PONY_REALISM)
     ->run();
 
 // Using Goddess of Realism model
 $result = $textToImage
     ->positivePrompt('A portrait of a young woman')
-    ->modelAir(ModelAir::GODDESS_OF_REALISM->value)
+    ->modelAir(ModelAir::GODDESS_OF_REALISM)
     ->run();
 ```
 
@@ -125,7 +125,7 @@ $result = $textToImage
     ->numberResults(4)
     ->outputType(OutputType::URL)
     ->outputFormat(OutputFormat::PNG)
-    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_14->value)
+    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_14)
     ->promptWeighting(PromptWeighting::COMPEL)
     ->run();
 
@@ -165,13 +165,13 @@ use AiMatchFun\PhpRunwareSDK\ModelAir;
 // Using a specific model version
 $result = $textToImage
     ->positivePrompt('A beautiful landscape')
-    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_14->value)
+    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_14)
     ->run();
 
 // Using different model variants
 $result = $textToImage
     ->positivePrompt('A portrait photo')
-    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_11->value)
+    ->modelAir(ModelAir::REAL_DREAM_SDXL_PONY_11)
     ->run();
 ```
 

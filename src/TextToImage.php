@@ -96,6 +96,7 @@ class TextToImage
             'clipSkip' => $this->clipSkip,
             'numberResults' => $this->numberResults,
             'scheduler' => $this->scheduler,
+            'includeCost' => true,
         ];
 
         if (!empty($this->images)) {
@@ -252,7 +253,7 @@ class TextToImage
     /**
      * Sets the model to be used for image generation
      *
-     * @param string $model The model identifier
+     * @param ModelAir $model The model enum
      * @return self
      */
     public function modelAir(ModelAir $model): self
