@@ -4,7 +4,7 @@ namespace AiMatchFun\PhpRunwareSDK;
 
 class IPAdapter
 {
-    public IpAdapterModel $modelAir;
+    public IpAdapterModel $model;
     public string $guideImage;
     public string $weight = 1.0;
 }

@@ -6,7 +6,7 @@ use AIMatchFun\Runware\ControlMode;
 
 enum ControlNet: string
 {
-    public string $modelAir;
+    public string $model;
     public string $guideImage;
     public string $weight;
     public string $startStep;

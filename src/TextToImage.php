@@ -256,7 +256,7 @@ class TextToImage
      * @param ModelAir $model The model enum
      * @return self
      */
-    public function modelAir(ModelAir $model): self
+    public function model(ModelAir $model): self
     {
         $this->model = $model->value;
         return $this;
