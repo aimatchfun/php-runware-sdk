@@ -19,23 +19,17 @@ Workflow para executar os testes do **php-runware-sdk**.
 - Execução manual via `workflow_dispatch`
 
 ### `tests-combined.yml`
-Workflow combinado que executa testes de **ambos os projetos** (php-runware-sdk e laravel-runware).
+Workflow para executar os testes do **php-runware-sdk** com resumo de resultados.
 
 **Características:**
 - Executa testes do php-runware-sdk
-- Executa testes do laravel-runware em múltiplas versões do PHP e Laravel
-- Gera um resumo final dos resultados
-
-**Nota:** Este workflow assume que o repositório do laravel-runware está no mesmo workspace ou acessível via checkout.
+- Gera um resumo final dos resultados dos testes
+- Similar ao `tests.yml`, mas com um job adicional de resumo
 
 ## Como Usar
 
-### Para php-runware-sdk apenas:
-O workflow `tests.yml` será executado automaticamente em pushes e PRs.
-
-### Para ambos os projetos:
-1. Certifique-se de que ambos os projetos estão acessíveis
-2. O workflow `tests-combined.yml` executará testes em ambos
+### Para php-runware-sdk:
+Os workflows `tests.yml` e `tests-combined.yml` serão executados automaticamente em pushes e PRs.
 
 ## Configuração
 
@@ -48,7 +42,6 @@ Os workflows estão configurados para:
 ## Requisitos
 
 - PHP 8.4+ para php-runware-sdk
-- PHP 8.2+ para laravel-runware
 - Composer instalado
 - Extensões PHP: json, mbstring
 
