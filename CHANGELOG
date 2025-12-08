@@ -7,14 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
-### Fixed
-- Synchronized `composer.lock` with `composer.json` dependencies
+## [2.0.0] - 2025-12-08
 
-## [2.0.0] - 2025-12-05
-
-### Changed
+### Changed (Breaking)
+- **BREAKING**: Renamed `ModelAir` enum to `RunwareModel`
+  - All references to `ModelAir` must be updated to `RunwareModel`
+  - Example: `ModelAir::REAL_DREAM_SDXL_PONY_14` → `RunwareModel::REAL_DREAM_SDXL_PONY_14`
+  - Updated all method signatures that accepted `ModelAir` to accept `RunwareModel`
+  - Updated documentation and examples
+- Fixed incorrect references to `FluxScheduler` in documentation (should be `Scheduler`)
 - Default `clipSkip` value changed from 1 to 0
 - Default `width` and `height` values changed from 512 to 1024
+
+### Internal
+- Reorganized source code into subdirectories for better structure:
+  - `src/Enums/` - Contains all enum classes (RunwareModel, Scheduler, OutputType, etc.)
+  - `src/Services/` - Contains service classes (TextToImage, RunwareImageUpload)
+  - `src/Models/` - Contains model/value object classes (RunwareResponse, Refiner, ControlNet, etc.)
+- Updated autoload configuration in `composer.json` to support new directory structure using classmap
+- Fixed `ControlNet` class definition (was incorrectly defined as enum, now properly defined as class)
+
+### Fixed
+- Synchronized `composer.lock` with `composer.json` dependencies
 
 ## [1.0.0] - 2025-03-11
 

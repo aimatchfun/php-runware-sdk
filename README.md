@@ -14,7 +14,7 @@ composer require aimatchfun/php-runware-sdk
 use AiMatchFun\PhpRunwareSDK\TextToImage;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
-use AiMatchFun\PhpRunwareSDK\FluxScheduler;
+use AiMatchFun\PhpRunwareSDK\Scheduler;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 
@@ -88,24 +88,24 @@ $result = $textToImage
 ### Using Different Schedulers
 
 ```php
-use AiMatchFun\PhpRunwareSDK\FluxScheduler;
+use AiMatchFun\PhpRunwareSDK\Scheduler;
 
 // Using DPM++ 2M scheduler
 $result = $textToImage
     ->positivePrompt('A beautiful landscape')
-    ->scheduler(FluxScheduler::DPM_PLUS_PLUS_2M)
+    ->scheduler(Scheduler::DPM_PLUS_PLUS_2M)
     ->run();
 
 // Using Euler scheduler
 $result = $textToImage
     ->positivePrompt('A sci-fi scene')
-    ->scheduler(FluxScheduler::EULER)
+    ->scheduler(Scheduler::EULER)
     ->run();
 
 // Using Karras scheduler
 $result = $textToImage
     ->positivePrompt('An artistic portrait')
-    ->scheduler(FluxScheduler::DPM_PLUS_PLUS_KARRAS)
+    ->scheduler(Scheduler::DPM_PLUS_PLUS_KARRAS)
     ->run();
 ```
 
