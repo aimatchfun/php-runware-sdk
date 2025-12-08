@@ -10,7 +10,7 @@ Use a classe `TextToImageWrapper` que permite injetar um mock HTTP client:
 
 ```php
 use Tests\TextToImageWrapper;
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use GuzzleHttp\Psr7\Response;
 
@@ -39,7 +39,7 @@ $result = $textToImage
     ->negativePrompt('blur')
     ->width(512)
     ->height(512)
-    ->model(ModelAir::REAL_DREAM_SDXL_PONY_14)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
     ->outputType(OutputType::URL)
     ->run();
 
@@ -55,7 +55,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Tests\TextToImageWrapper;
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use GuzzleHttp\Psr7\Response;
 

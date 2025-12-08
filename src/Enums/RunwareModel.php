@@ -2,7 +2,7 @@
 
 namespace AiMatchFun\PhpRunwareSDK;
 
-enum ModelAir: string
+enum RunwareModel: string
 {
     case WAI_ANIME_NSFW_PONYXL = 'civitai:404154@931577';
     case HENTAI_BASIC = 'civitai:282341@826474';
@@ -32,3 +32,4 @@ enum ModelAir: string
     case ILLUSTRIOUS_XL = 'x:42@889818';
     case BABES_BY_STABLE_YOGI_V5 = 'aimatch:1134825@2044007';
 }
+

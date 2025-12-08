@@ -2,9 +2,7 @@
 
 namespace AiMatchFun\PhpRunwareSDK;
 
-use AIMatchFun\Runware\ControlMode;   
-
-enum ControlNet: string
+class ControlNet
 {
     public string $model;
     public string $guideImage;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\TextToImage;
@@ -88,7 +88,7 @@ class TextToImageTest extends TestCase
 
     public function testCanSetModel(): void
     {
-        $result = $this->textToImage->model(ModelAir::REAL_DREAM_SDXL_PONY_14);
+        $result = $this->textToImage->model(RunwareModel::REAL_DREAM_SDXL_PONY_14);
         
         $this->assertSame($this->textToImage, $result);
     }

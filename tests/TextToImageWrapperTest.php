@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use Exception;
@@ -39,7 +39,7 @@ class TextToImageWrapperTest extends TestCase
             ->negativePrompt('blur')
             ->width(512)
             ->height(512)
-            ->model(ModelAir::REAL_DREAM_SDXL_PONY_14)
+            ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
             ->steps(20)
             ->cfgScale(7.5)
             ->numberResults(1)
@@ -119,7 +119,7 @@ class TextToImageWrapperTest extends TestCase
             ->negativePrompt('blur, low quality')
             ->width(1024)
             ->height(768)
-            ->model(ModelAir::REAL_DREAM_SDXL_PONY_14)
+            ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
             ->steps(30)
             ->cfgScale(8.5)
             ->numberResults(2)

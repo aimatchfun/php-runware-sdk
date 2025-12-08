@@ -8,7 +8,12 @@
   "autoload": {
     "psr-4": {
       "AiMatchFun\\PhpRunwareSDK\\": "src/"
-    }
+    },
+    "classmap": [
+      "src/Enums/",
+      "src/Services/",
+      "src/Models/"
+    ]
   },
   "authors": [
     {

@@ -15,7 +15,7 @@ use AiMatchFun\PhpRunwareSDK\TextToImage;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\FluxScheduler;
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 
 $textToImage = new TextToImage('your_api_key');
@@ -24,7 +24,7 @@ $result = $textToImage
     ->positivePrompt('A beautiful sunset over a calm ocean')
     ->height(768)
     ->width(1024)
-    ->model(ModelAir::REAL_DREAM_SDXL_PONY_14)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
     ->steps(30)
     ->cfgScale(8.5)
     ->numberResults(1)
@@ -40,20 +40,20 @@ $result = $textToImage
 
 ```php
 use AiMatchFun\PhpRunwareSDK\TextToImage;
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 
 $textToImage = new TextToImage('your_api_key');
 
 // Using Pony Realism model
 $result = $textToImage
     ->positivePrompt('A serene mountain landscape at sunset')
-    ->model(ModelAir::PONY_REALISM)
+    ->model(RunwareModel::PONY_REALISM)
     ->run();
 
 // Using Goddess of Realism model
 $result = $textToImage
     ->positivePrompt('A portrait of a young woman')
-    ->model(ModelAir::GODDESS_OF_REALISM)
+    ->model(RunwareModel::GODDESS_OF_REALISM)
     ->run();
 ```
 
@@ -125,7 +125,7 @@ $result = $textToImage
     ->numberResults(4)
     ->outputType(OutputType::URL)
     ->outputFormat(OutputFormat::PNG)
-    ->model(ModelAir::REAL_DREAM_SDXL_PONY_14)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
     ->promptWeighting(PromptWeighting::COMPEL)
     ->run();
 
@@ -160,18 +160,18 @@ $result = $textToImage
 ### Using Custom Models
 
 ```php
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 
 // Using a specific model version
 $result = $textToImage
     ->positivePrompt('A beautiful landscape')
-    ->model(ModelAir::REAL_DREAM_SDXL_PONY_14)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
     ->run();
 
 // Using different model variants
 $result = $textToImage
     ->positivePrompt('A portrait photo')
-    ->model(ModelAir::REAL_DREAM_SDXL_PONY_11)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_11)
     ->run();
 ```
 

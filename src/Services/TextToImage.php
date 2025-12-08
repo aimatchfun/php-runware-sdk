@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\ServerException;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\PromptWeighting;
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\Scheduler;
 use Exception;
 use InvalidArgumentException;
@@ -31,7 +31,7 @@ class TextToImage
     private string $scheduler = Scheduler::EULER_A->value;
     private string $promptWeighting = PromptWeighting::SD_EMBEDS->value;
     private bool $usePromptWeighting = false;
-    private ?ModelAir $vae = null;
+    private ?RunwareModel $vae = null;
     private ?Refiner $refiner = null;
     private array $embeddings = [];
     private array $controlNet = [];
@@ -167,10 +167,10 @@ class TextToImage
     /**
      * Adds an embedding model to the image generation process
      * 
-     * @param ModelAir $embedding The embedding model to add
+     * @param RunwareModel $embedding The embedding model to add
      * @return self
      */
-    public function addEmbedding (ModelAir $embedding): self
+    public function addEmbedding (RunwareModel $embedding): self
     {
         $this->embeddings[] = $embedding;
         return $this;
@@ -179,10 +179,10 @@ class TextToImage
     /**
      * Adds a ControlNet model to guide the image generation
      * 
-     * @param ModelAir $controlNet The ControlNet model to add
+     * @param RunwareModel $controlNet The ControlNet model to add
      * @return self
      */
-    public function addControlNet (ModelAir $controlNet): self
+    public function addControlNet (RunwareModel $controlNet): self
     {
         $this->controlNet[] = $controlNet;
         return $this;
@@ -191,10 +191,10 @@ class TextToImage
     /**
      * Adds an IP-Adapter model for image conditioning
      * 
-     * @param ModelAir $ipAdapter The IP-Adapter model to add
+     * @param RunwareModel $ipAdapter The IP-Adapter model to add
      * @return self
      */
-    public function addIpAdapter (ModelAir $ipAdapter): self
+    public function addIpAdapter (RunwareModel $ipAdapter): self
     {
         $this->ipAdapters[] = $ipAdapter;
         return $this;
@@ -253,10 +253,10 @@ class TextToImage
     /**
      * Sets the model to be used for image generation
      *
-     * @param ModelAir $model The model enum
+     * @param RunwareModel $model The model enum
      * @return self
      */
-    public function model(ModelAir $model): self
+    public function model(RunwareModel $model): self
     {
         $this->model = $model->value;
         return $this;
@@ -559,10 +559,10 @@ class TextToImage
     /**
      * Sets the VAE model for image generation
      *
-     * @param ModelAir $vae The VAE model to use
+     * @param RunwareModel $vae The VAE model to use
      * @return self
      */
-    public function vae(ModelAir $vae): self
+    public function vae(RunwareModel $vae): self
     {
         $this->vae = $vae;
         return $this;

@@ -9,7 +9,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Tests\TextToImageWrapper;
-use AiMatchFun\PhpRunwareSDK\ModelAir;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use GuzzleHttp\Psr7\Response;
@@ -42,7 +42,7 @@ try {
         ->negativePrompt('blur, low quality, distorted')
         ->width(512)
         ->height(512)
-        ->model(ModelAir::REAL_DREAM_SDXL_PONY_14)
+        ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
         ->steps(20)
         ->cfgScale(7.5)
         ->numberResults(1)
