@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
+## [2.0.2] - 2025-12-08
+
+### Fixed
+- Fixed `addLora()` method to properly include LoRAs in request body under `lora` field
+
 ## [2.0.0] - 2025-12-08
 
 ### Changed (Breaking)

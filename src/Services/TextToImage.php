@@ -115,6 +115,10 @@ class TextToImage
             $requestBody['ipAdapters'] = array_map(fn($adapter) => $adapter->value, $this->ipAdapters);
         }
 
+        if (!empty($this->loras)) {
+            $requestBody['lora'] = $this->loras;
+        }
+
         $acceleratorOptions = [];
 
         if ($this->teaCache !== false) {
