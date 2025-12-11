@@ -10,6 +10,8 @@ composer require aimatchfun/php-runware-sdk
 
 ## Basic Usage
 
+### Text to Image
+
 ```php
 use AiMatchFun\PhpRunwareSDK\TextToImage;
 use AiMatchFun\PhpRunwareSDK\OutputType;
@@ -34,7 +36,101 @@ $result = $textToImage
     ->run();
 ```
 
+### Inpainting
+
+Inpainting allows you to selectively edit specific areas of an image by providing a seed image and a mask image:
+
+```php
+use AiMatchFun\PhpRunwareSDK\Inpainting;
+use AiMatchFun\PhpRunwareSDK\OutputType;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
+
+$inpainting = new Inpainting('your_api_key');
+
+$result = $inpainting
+    ->seedImage('59a2edc2-45e6-429f-be5f-7ded59b92046') // Image UUID or URL
+    ->maskImage('5988e195-8100-4b91-b07c-c7096d0861aa') // Mask UUID or URL
+    ->positivePrompt('a serene beach at sunset')
+    ->negativePrompt('blur, distortion')
+    ->strength(0.8) // Strength of the inpainting effect (0.0 to 1.0)
+    ->maskMargin(64) // Extra context pixels around masked region (32-128)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
+    ->width(1024)
+    ->height(1024)
+    ->outputType(OutputType::URL)
+    ->run();
+```
+
+**Inpainting Parameters:**
+- `seedImage(string $image)`: The original image you wish to edit (UUID, URL, base64, or data URI)
+- `maskImage(string $image)`: Defines the area to be modified (UUID, URL, base64, or data URI)
+  - White areas (255,255,255) indicate regions to be modified
+  - Black areas (0,0,0) indicate regions to preserve
+  - Gray values create partial modification
+- `strength(float $strength)`: Strength of the inpainting effect (0.0 to 1.0, default: 0.8)
+- `maskMargin(int $margin)`: Adds extra context pixels around masked region (32-128 pixels)
+
+For more details about inpainting, see the [Runware Inpainting Documentation](https://runware.ai/docs/en/image-inference/inpainting).
+
 ## Examples
+
+### Inpainting Examples
+
+#### Basic Inpainting
+
+```php
+use AiMatchFun\PhpRunwareSDK\Inpainting;
+use AiMatchFun\PhpRunwareSDK\OutputType;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
+
+$inpainting = new Inpainting('your_api_key');
+
+// Simple object removal
+$result = $inpainting
+    ->seedImage('image-uuid-or-url')
+    ->maskImage('mask-uuid-or-url')
+    ->positivePrompt('white wall')
+    ->negativePrompt('blur, distortion')
+    ->strength(0.8)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
+    ->outputType(OutputType::URL)
+    ->run();
+```
+
+#### Inpainting with Mask Margin for Enhanced Detail
+
+```php
+// Using maskMargin to enhance facial features
+$result = $inpainting
+    ->seedImage('image-uuid')
+    ->maskImage('face-mask-uuid')
+    ->positivePrompt('a detailed face with natural lighting')
+    ->maskMargin(64) // Enhances detail by zooming into masked area
+    ->strength(0.8)
+    ->steps(40) // Higher steps for better detail
+    ->cfgScale(8.0)
+    ->run();
+```
+
+#### Inpainting with Different Strength Values
+
+```php
+// Low strength - subtle modification
+$result = $inpainting
+    ->seedImage('image-uuid')
+    ->maskImage('mask-uuid')
+    ->positivePrompt('red apple')
+    ->strength(0.5) // More influence from original image
+    ->run();
+
+// High strength - complete replacement
+$result = $inpainting
+    ->seedImage('image-uuid')
+    ->maskImage('mask-uuid')
+    ->positivePrompt('blue sky with clouds')
+    ->strength(0.9) // More creative deviation
+    ->run();
+```
 
 ### Text to Image Generation with Different Models
 
@@ -246,12 +342,23 @@ try {
 
 The SDK includes built-in validation for all parameters:
 
+**TextToImage:**
 - Height and width must be between 128 and 2048 and divisible by 64
 - Steps must be between 1 and 100
 - CFG Scale must be between 0 and 30
 - Number of results must be between 1 and 20
 - CLIP skip must be between 0 and 2
 - TeaCache distance must be between 0 and 1
+
+**Inpainting:**
+- Height and width must be between 128 and 2048 and divisible by 64
+- Steps must be between 1 and 100
+- CFG Scale must be between 0 and 30
+- Number of results must be between 1 and 20
+- CLIP skip must be between 0 and 2
+- Strength must be between 0.0 and 1.0
+- Mask margin must be between 32 and 128
+- Seed image and mask image are required
 
 ## Documentation
 

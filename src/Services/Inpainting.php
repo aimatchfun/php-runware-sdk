@@ -1,0 +1,684 @@
+<?php
+
+namespace AiMatchFun\PhpRunwareSDK;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use AiMatchFun\PhpRunwareSDK\OutputType;
+use AiMatchFun\PhpRunwareSDK\OutputFormat;
+use AiMatchFun\PhpRunwareSDK\PromptWeighting;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
+use AiMatchFun\PhpRunwareSDK\Scheduler;
+use Exception;
+use InvalidArgumentException;
+
+class Inpainting
+{
+    private string $apiKey;
+    private string $apiUrl = 'https://api.runware.ai/v1';
+    private string $positivePrompt = '';
+    private int $height = 1024;
+    private int $width = 1024;
+    private string $model = 'civitai:618692@691639';
+    private int $steps = 20;
+    private float $CFGScale = 7.0;
+    private int $numberResults = 1;
+    private string $outputType = OutputType::URL->value;
+    private string $outputFormat = OutputFormat::JPG->value;
+    private string $negativePrompt = '';
+    private bool $nsfw = false;
+    private string $scheduler = Scheduler::EULER_A->value;
+    private string $promptWeighting = PromptWeighting::SD_EMBEDS->value;
+    private bool $usePromptWeighting = false;
+    private ?RunwareModel $vae = null;
+    private ?Refiner $refiner = null;
+    private array $embeddings = [];
+    private array $controlNet = [];
+    private array $ipAdapters = [];
+    private array $loras = [];
+    private bool $teaCache = false;
+    private float $teaCacheDistance = 0.5;
+    private bool $deepCache = false;
+    private int $deepCacheInterval = 3;
+    private int $deepCacheBranchId = 0;
+    private int $clipSkip = 0;
+    
+    // Inpainting specific properties
+    private ?string $seedImage = null;
+    private ?string $maskImage = null;
+    private float $strength = 0.8;
+    private ?int $maskMargin = null;
+
+    public function __construct(string $apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
+
+    /**
+     * Generates an inpainted image from the provided seed image and mask
+     *
+     * @return string The generated image data according to the specified output type
+     * @throws Exception If API request fails or response is invalid
+     */
+    public function run(): string
+    {
+        $requestBody = $this->mountRequestBody();
+
+        $response = $this->post($requestBody);
+
+        return $this->handleResponse($response);
+    }
+
+    /**
+     * Mounts the request body for the inpainting generation
+     *
+     * @return array The request body
+     */
+    private function mountRequestBody(): array
+    {
+        if (empty($this->positivePrompt)) {
+            throw new InvalidArgumentException("Positive prompt is required");
+        }
+        
+        if (empty($this->seedImage)) {
+            throw new InvalidArgumentException("Seed image is required for inpainting");
+        }
+        
+        if (empty($this->maskImage)) {
+            throw new InvalidArgumentException("Mask image is required for inpainting");
+        }
+
+        $requestBody = [
+            'taskType' => 'imageInference',
+            'taskUUID' => $this->generateUUID(),
+            'outputType' => $this->outputType,
+            'outputFormat' => $this->outputFormat,
+            'positivePrompt' => $this->positivePrompt,
+            'negativePrompt' => $this->negativePrompt,
+            'height' => $this->height,
+            'width' => $this->width,
+            'model' => $this->model,
+            'steps' => $this->steps,
+            'checkNsfw' => $this->nsfw,
+            'CFGScale' => $this->CFGScale,
+            'clipSkip' => $this->clipSkip,
+            'numberResults' => $this->numberResults,
+            'scheduler' => $this->scheduler,
+            'seedImage' => $this->seedImage,
+            'maskImage' => $this->maskImage,
+            'strength' => $this->strength,
+            'includeCost' => true,
+        ];
+
+        if ($this->maskMargin !== null) {
+            if ($this->maskMargin < 32 || $this->maskMargin > 128) {
+                throw new InvalidArgumentException('Mask margin must be between 32 and 128');
+            }
+            $requestBody['maskMargin'] = $this->maskMargin;
+        }
+
+        if (!empty($this->embeddings)) {
+            $requestBody['embeddings'] = array_map(fn($embedding) => $embedding->value, $this->embeddings);
+        }
+
+        if (!empty($this->controlNet)) {
+            $requestBody['controlNet'] = array_map(fn($control) => $control->value, $this->controlNet);
+        }
+
+        if (!empty($this->ipAdapters)) {
+            $requestBody['ipAdapters'] = array_map(fn($adapter) => $adapter->value, $this->ipAdapters);
+        }
+
+        if (!empty($this->loras)) {
+            $requestBody['lora'] = $this->loras;
+        }
+
+        $acceleratorOptions = [];
+
+        if ($this->teaCache !== false) {
+            $acceleratorOptions['teaCache'] = $this->teaCache;
+        }
+        
+        if ($this->teaCacheDistance !== 0.5) {
+            $acceleratorOptions['teaCacheDistance'] = $this->teaCacheDistance;
+        }
+        
+        if ($this->deepCache !== false) {
+            $acceleratorOptions['deepCache'] = $this->deepCache;
+        }
+        
+        if ($this->deepCacheInterval !== 3) {
+            $acceleratorOptions['deepCacheInterval'] = $this->deepCacheInterval;
+        }
+        
+        if ($this->deepCacheBranchId !== 0) {
+            $acceleratorOptions['deepCacheBranchId'] = $this->deepCacheBranchId;
+        }
+
+        if (!empty($acceleratorOptions)) {
+            $requestBody['acceleratorOptions'] = $acceleratorOptions;
+        }
+
+        if ($this->usePromptWeighting) {
+            $requestBody['promptWeighting'] = $this->promptWeighting;
+        }
+
+        if ($this->vae !== null) {
+            $requestBody['vae'] = $this->vae->value;
+        }
+
+        return $requestBody;
+    }
+
+    /**
+     * Sets the seed image (original image) for inpainting
+     *
+     * @param string $image The image UUID or URL
+     * @return self
+     */
+    public function seedImage(string $image): self
+    {
+        $this->seedImage = $image;
+        return $this;
+    }
+
+    /**
+     * Sets the mask image that defines the area to be modified
+     *
+     * @param string $image The mask image UUID or URL
+     * @return self
+     */
+    public function maskImage(string $image): self
+    {
+        $this->maskImage = $image;
+        return $this;
+    }
+
+    /**
+     * Sets the strength of the inpainting effect
+     *
+     * @param float $strength Strength value (between 0.0 and 1.0)
+     * @return self
+     * @throws InvalidArgumentException If strength value is invalid
+     */
+    public function strength(float $strength): self
+    {
+        if ($strength < 0.0 || $strength > 1.0) {
+            throw new InvalidArgumentException('Strength must be between 0.0 and 1.0');
+        }
+        $this->strength = $strength;
+        return $this;
+    }
+
+    /**
+     * Sets the mask margin (extra context pixels around masked region)
+     *
+     * @param int $margin Margin value (between 32 and 128)
+     * @return self
+     * @throws InvalidArgumentException If margin value is invalid
+     */
+    public function maskMargin(int $margin): self
+    {
+        if ($margin < 32 || $margin > 128) {
+            throw new InvalidArgumentException('Mask margin must be between 32 and 128');
+        }
+        $this->maskMargin = $margin;
+        return $this;
+    }
+
+    /**
+     * Sets the positive prompt for image generation
+     *
+     * @param string $prompt The positive prompt text
+     * @return self
+     */
+    public function positivePrompt(string $prompt): self
+    {
+        $this->positivePrompt = $prompt;
+        return $this;
+    }
+
+    public function scheduler(Scheduler $scheduler): self
+    {
+        $this->scheduler = $scheduler->value;
+        return $this;
+    }
+
+    /**
+     * Sets the width of the image to be generated
+     *
+     * @param int $width The width value (must be between 128 and 2048 and divisible by 64)
+     * @return self
+     * @throws InvalidArgumentException If width is invalid
+     */
+    public function width(int $width): self
+    {
+        if ($width < 128 || $width > 2048 || $width % 64 !== 0) {
+            throw new InvalidArgumentException('Width must be between 128 and 2048 and divisible by 64');
+        }
+        $this->width = $width;
+        return $this;
+    }
+
+    /**
+     * Sets the height of the image to be generated
+     *
+     * @param int $height The height value (must be between 128 and 2048 and divisible by 64)
+     * @return self
+     * @throws InvalidArgumentException If height is invalid
+     */
+    public function height(int $height): self
+    {
+        if ($height < 128 || $height > 2048 || $height % 64 !== 0) {
+            throw new InvalidArgumentException('Height must be between 128 and 2048 and divisible by 64');
+        }
+        $this->height = $height;
+        return $this;
+    }
+
+    /**
+     * Sets the model to be used for image generation
+     *
+     * @param RunwareModel $model The model enum
+     * @return self
+     */
+    public function model(RunwareModel $model): self
+    {
+        $this->model = $model->value;
+        return $this;
+    }
+
+    /**
+     * Sets the number of steps for image generation
+     *
+     * @param int $steps Number of steps (between 1 and 100)
+     * @return self
+     * @throws InvalidArgumentException If steps value is invalid
+     */
+    public function steps(int $steps): self
+    {
+        if ($steps < 1 || $steps > 100) {
+            throw new InvalidArgumentException('Number of steps must be between 1 and 100');
+        }
+        $this->steps = $steps;
+        return $this;
+    }
+
+    /**
+     * Sets the CFG scale for image generation
+     *
+     * @param float $scale CFG scale value (between 0 and 30)
+     * @return self
+     * @throws InvalidArgumentException If scale value is invalid
+     */
+    public function cfgScale(float $scale): self
+    {
+        if ($scale < 0 || $scale > 30) {
+            throw new InvalidArgumentException('CFG Scale must be between 0 and 30');
+        }
+        $this->CFGScale = $scale;
+        return $this;
+    }
+
+    /**
+     * Sets the number of results to be generated
+     *
+     * @param int $number Number of results (between 1 and 20)
+     * @return self
+     * @throws InvalidArgumentException If number is invalid
+     */
+    public function numberResults(int $number): self
+    {
+        if ($number < 1 || $number > 20) {
+            throw new InvalidArgumentException('Number of results must be between 1 and 20');
+        }
+        $this->numberResults = $number;
+        return $this;
+    }
+
+    /**
+     * Sets the output type for the generated image
+     *
+     * @param OutputType $type The output type (URL, base64Data, dataURI)
+     * @return self
+     */
+    public function outputType(OutputType $type): self
+    {
+        $this->outputType = $type->value;
+        return $this;
+    }
+
+    /**
+     * Sets the output format for the generated image
+     *
+     * @param OutputFormat $format The output format (JPG, PNG, WEBP)
+     * @return self
+     */
+    public function outputFormat(OutputFormat $format): self
+    {
+        $this->outputFormat = $format->value;
+
+        return $this;
+    }
+
+    /**
+     * Sets whether NSFW content is allowed
+     *
+     * @param bool $nsfw True to allow NSFW content, false to disallow
+     * @return self
+     */
+    public function nsfw(bool $nsfw): self
+    {
+        $this->nsfw = $nsfw;
+        return $this;
+    }
+
+    /**
+     * Sets the negative prompt for image generation
+     *
+     * @param string $prompt The negative prompt text
+     * @return self
+     */
+    public function negativePrompt(string $prompt): self
+    {
+        $this->negativePrompt = $prompt;
+        return $this;
+    }
+
+    /**
+     * Adds a LoRA model to the generation process
+     *
+     * @param string $model The LoRA model identifier
+     * @param float $weight The weight to apply to the LoRA model (default: 1.0)
+     * @return self
+     */
+    public function addLora(string $model, float $weight = 1.0): self
+    {
+        $this->loras[] = [
+            'model' => $model,
+            'weight' => $weight
+        ];
+        return $this;
+    }
+
+    /**
+     * Enable or disable TeaCache feature for transformer-based models
+     * @param bool $enabled Whether to enable TeaCache
+     */
+    public function teaCache(bool $enabled): self
+    {
+        $this->teaCache = $enabled;
+        return $this;
+    }
+
+    /**
+     * Set the TeaCache distance (aggressiveness)
+     * @param float $distance Value between 0.0 (conservative) and 1.0 (aggressive)
+     * @throws InvalidArgumentException if distance is not between 0 and 1
+     */
+    public function teaCacheDistance(float $distance): self
+    {
+        if ($distance < 0 || $distance > 1) {
+            throw new InvalidArgumentException('TeaCache distance must be between 0 and 1');
+        }
+        $this->teaCacheDistance = $distance;
+        return $this;
+    }
+
+    /**
+     * Enable or disable DeepCache feature for UNet-based models
+     * @param bool $enabled Whether to enable DeepCache
+     */
+    public function deepCache(bool $enabled): self
+    {
+        $this->deepCache = $enabled;
+        return $this;
+    }
+
+    /**
+     * Set the DeepCache interval
+     * @param int $interval Number of steps between each cache operation (minimum 1)
+     * @throws InvalidArgumentException if interval is less than 1
+     */
+    public function deepCacheInterval(int $interval): self
+    {
+        if ($interval < 1) {
+            throw new InvalidArgumentException('DeepCache interval must be at least 1');
+        }
+        $this->deepCacheInterval = $interval;
+        return $this;
+    }
+
+    /**
+     * Set the DeepCache branch ID
+     * @param int $branchId Branch ID for caching processes (minimum 0)
+     * @throws InvalidArgumentException if branchId is less than 0
+     */
+    public function deepCacheBranchId(int $branchId): self
+    {
+        if ($branchId < 0) {
+            throw new InvalidArgumentException('DeepCache branch ID must be at least 0');
+        }
+        $this->deepCacheBranchId = $branchId;
+        return $this;
+    }
+
+    /**
+     * Sets the CLIP skip value for text encoding
+     *
+     * @param int $skip Number of layers to skip (0-2)
+     * @return self
+     * @throws InvalidArgumentException If skip value is invalid
+     */
+    public function clipSkip(int $skip): self
+    {
+        if ($skip < 0 || $skip > 2) {
+            throw new InvalidArgumentException('CLIP skip must be between 0 and 2');
+        }
+        $this->clipSkip = $skip;
+        return $this;
+    }
+
+    /**
+     * Converts the current configuration to JSON format
+     *
+     * @param bool $prettyPrint Whether to format the JSON output (default: false)
+     * @return string The JSON representation of the configuration
+     */
+    public function toJson($prettyPrint = false): string
+    {
+        $requestBody = $this->mountRequestBody();
+
+        if ($prettyPrint) {
+            return json_encode($requestBody, JSON_PRETTY_PRINT);
+        }
+
+        return json_encode($requestBody);
+    }
+
+    private function generateUUID(): string
+    {
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
+    }
+
+    /**
+     * Adds a refiner model to the image generation process
+     * 
+     * @param Refiner $refiner The refiner model to add
+     * @return self
+     */
+    public function addRefiner (Refiner $refiner): self
+    {
+        $this->refiner = $refiner;
+        return $this;
+    }
+
+    /**
+     * Adds an embedding model to the image generation process
+     * 
+     * @param RunwareModel $embedding The embedding model to add
+     * @return self
+     */
+    public function addEmbedding (RunwareModel $embedding): self
+    {
+        $this->embeddings[] = $embedding;
+        return $this;
+    }
+
+    /**
+     * Adds a ControlNet model to guide the image generation
+     * 
+     * @param RunwareModel $controlNet The ControlNet model to add
+     * @return self
+     */
+    public function addControlNet (RunwareModel $controlNet): self
+    {
+        $this->controlNet[] = $controlNet;
+        return $this;
+    }
+
+    /**
+     * Adds an IP-Adapter model for image conditioning
+     * 
+     * @param RunwareModel $ipAdapter The IP-Adapter model to add
+     * @return self
+     */
+    public function addIpAdapter (RunwareModel $ipAdapter): self
+    {
+        $this->ipAdapters[] = $ipAdapter;
+        return $this;
+    }
+
+    /**
+     * Makes a POST request to the Runware API
+     *
+     * @param array $data The request data
+     * @return string The API response
+     * @throws Exception If the API request fails
+     */
+    private function post(array $data)
+    {
+        $client = new Client();
+
+        try {
+            $response = $client->post($this->apiUrl, [
+                'json' => [$data],
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->apiKey
+                ]
+            ]);
+
+            return $response->getBody()->getContents();
+        } catch (ClientException $e) {
+            throw new Exception("Runware API Error: " . $e->getResponse()->getBody()->getContents());
+        } catch (ServerException $e) {
+            throw new Exception("Runware Server Error: " . $e->getResponse()->getBody()->getContents());
+        } catch (Exception $e) {
+            throw new Exception("Error connecting to Runware API: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Processes the API response and extracts the appropriate output format
+     *
+     * @param string $response The raw API response
+     * @return string The processed image data in the requested format
+     * @throws Exception If response processing fails or output type is not found
+     */
+    private function handleResponse($response)
+    {
+        $data = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Error decoding JSON response: " . json_last_error_msg());
+        }
+
+        if (!isset($data['data'][0])) {
+            throw new Exception("API response does not contain data");
+        }
+
+        $result = $data['data'][0];
+
+        if ($this->outputType === 'URL' && isset($result['imageURL'])) {
+            return $result['imageURL'];
+        } elseif ($this->outputType === 'base64Data' && isset($result['imageBase64Data'])) {
+            return $result['imageBase64Data'];
+        } elseif ($this->outputType === 'dataURI' && isset($result['imageDataURI'])) {
+            return $result['imageDataURI'];
+        }
+
+        throw new Exception("Requested output type not found in response");
+    }
+
+    /**
+     * Sets the VAE model for image generation
+     *
+     * @param RunwareModel $vae The VAE model to use
+     * @return self
+     */
+    public function vae(RunwareModel $vae): self
+    {
+        $this->vae = $vae;
+        return $this;
+    }
+
+    /**
+     * Makes a POST request to the Runware API asynchronously
+     *
+     * @param array $data The request data
+     * @return \GuzzleHttp\Promise\PromiseInterface The promise that will resolve to the API response
+     * @throws Exception If the API request fails
+     */
+    private function postAsync(array $data)
+    {
+        $client = new Client();
+
+        return $client->postAsync($this->apiUrl, [
+            'json' => [$data],
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->apiKey
+            ]
+        ])->then(
+            function ($response) {
+                return $this->handleResponse($response->getBody()->getContents());
+            },
+            function ($exception) {
+                if ($exception instanceof ClientException) {
+                    throw new Exception("Runware API Error: " . $exception->getResponse()->getBody()->getContents());
+                } elseif ($exception instanceof ServerException) {
+                    throw new Exception("Runware Server Error: " . $exception->getResponse()->getBody()->getContents());
+                } else {
+                    throw new Exception("Error connecting to Runware API: " . $exception->getMessage());
+                }
+            }
+        );
+    }
+
+    /**
+     * Generates an inpainted image asynchronously
+     *
+     * @return \GuzzleHttp\Promise\PromiseInterface The promise that will resolve to the generated image data
+     * @throws Exception If API request fails or response is invalid
+     */
+    public function runAsync()
+    {
+        $requestBody = $this->mountRequestBody();
+        return $this->postAsync($requestBody);
+    }
+
+    public function promptWeighting(PromptWeighting $weighting): self
+    {
+        $this->promptWeighting = $weighting->value;
+        $this->usePromptWeighting = true;
+        return $this;
+    }
+}
