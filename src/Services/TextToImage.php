@@ -257,12 +257,12 @@ class TextToImage
     /**
      * Sets the model to be used for image generation
      *
-     * @param RunwareModel $model The model enum
+     * @param RunwareModel|string $model The model enum or string
      * @return self
      */
-    public function model(RunwareModel $model): self
+    public function model(RunwareModel|string $model): self
     {
-        $this->model = $model->value;
+        $this->model = $model instanceof RunwareModel ? $model->value : $model;
         return $this;
     }
 
