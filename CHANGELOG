@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
+### Added
+- `model()` method in `TextToImage` and `Inpainting` classes now accepts both `RunwareModel` enum and string values (AIR format), providing more flexibility when specifying models
+
 ## [2.0.2] - 2025-12-08
 
 ### Fixed

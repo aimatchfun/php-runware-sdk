@@ -258,18 +258,26 @@ $result = $textToImage
 ```php
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 
-// Using a specific model version
+// Using a specific model version with ENUM
 $result = $textToImage
     ->positivePrompt('A beautiful landscape')
     ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
     ->run();
 
-// Using different model variants
+// Using different model variants with ENUM
 $result = $textToImage
     ->positivePrompt('A portrait photo')
     ->model(RunwareModel::REAL_DREAM_SDXL_PONY_11)
     ->run();
+
+// Using model with string directly (AIR format)
+$result = $textToImage
+    ->positivePrompt('A fantasy scene')
+    ->model('civitai:618692@691639') // Direct AIR string
+    ->run();
 ```
+
+**Note:** The `model()` method accepts both `RunwareModel` enum values and string values (AIR format). This allows you to use predefined models from the enum or specify custom models using their AIR identifier directly.
 
 ### Uploading LoRA Models
 
