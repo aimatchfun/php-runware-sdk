@@ -6,7 +6,7 @@ enum Scheduler: string
 {
     case EULER = 'Euler';
     case EULER_A = 'EulerAncestralDiscreteScheduler';
-    case FLOW_MATCH_EULER = 'FlowMatch Euler';
+    case FLOW_MATCH_EULER = 'FlowMatchEulerDiscreteScheduler';
     case DPM_PLUS_PLUS = 'DPM++';
     case DPM_PLUS_PLUS_SDE = 'DPM++ SDE';
     case DPM_PLUS_PLUS_2M = 'DPM++ 2M';
