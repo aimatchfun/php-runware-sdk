@@ -72,7 +72,105 @@ $result = $inpainting
 
 For more details about inpainting, see the [Runware Inpainting Documentation](https://runware.ai/docs/en/image-inference/inpainting).
 
+### Image Upload
+
+Image Upload allows you to upload images to the Runware API and receive an image UUID that can be used in other operations like inpainting:
+
+```php
+use AiMatchFun\PhpRunwareSDK\ImageUpload;
+
+$imageUpload = new ImageUpload('your_api_key');
+
+// Upload and get the image UUID
+$imageUUID = $imageUpload
+    ->image('https://example.com/image.png') // URL, base64, or data URI
+    ->run();
+
+// The returned UUID can be used in other operations
+echo "Image uploaded with UUID: " . $imageUUID;
+```
+
+**Image Upload Parameters:**
+- `image(string $image)`: The image to upload in one of these formats:
+  - Public image URL: `https://example.com/image.png`
+  - Base64 data URI: `data:image/png;base64,iVBORw0KGgo...`
+  - Pure base64: `iVBORw0KGgo...`
+
+For more details about image upload, see the [Runware Image Upload Documentation](https://runware.ai/docs/en/utilities/image-upload).
+
 ## Examples
+
+### Image Upload Examples
+
+#### Uploading from URL
+
+```php
+use AiMatchFun\PhpRunwareSDK\ImageUpload;
+
+$imageUpload = new ImageUpload('your_api_key');
+
+$imageUUID = $imageUpload
+    ->image('https://example.com/my-image.png')
+    ->run();
+
+echo "Image UUID: " . $imageUUID;
+```
+
+#### Uploading Base64 Encoded Image
+
+```php
+use AiMatchFun\PhpRunwareSDK\ImageUpload;
+
+$imageUpload = new ImageUpload('your_api_key');
+
+// Using pure base64 string
+$base64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
+$imageUUID = $imageUpload
+    ->image($base64Image)
+    ->run();
+
+// Using data URI format
+$dataURI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
+$imageUUID = $imageUpload
+    ->image($dataURI)
+    ->run();
+```
+
+#### Using Uploaded Image with Inpainting
+
+```php
+use AiMatchFun\PhpRunwareSDK\ImageUpload;
+use AiMatchFun\PhpRunwareSDK\Inpainting;
+use AiMatchFun\PhpRunwareSDK\RunwareModel;
+use AiMatchFun\PhpRunwareSDK\OutputType;
+
+// Step 1: Upload the image
+$imageUpload = new ImageUpload('your_api_key');
+$imageUUID = $imageUpload
+    ->image('https://example.com/image.png')
+    ->run();
+
+// Step 2: Upload the mask image
+$maskUUID = $imageUpload
+    ->image('https://example.com/mask.png')
+    ->run();
+
+// Step 3: Use the uploaded images in inpainting
+$inpainting = new Inpainting('your_api_key');
+$result = $inpainting
+    ->seedImage($imageUUID)      // Use the uploaded image UUID
+    ->maskImage($maskUUID)        // Use the uploaded mask UUID
+    ->positivePrompt('a beautiful blue sky')
+    ->negativePrompt('blur, distortion')
+    ->strength(0.8)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
+    ->outputType(OutputType::URL)
+    ->run();
+
+echo "Inpainted image: " . $result;
+```
 
 ### Inpainting Examples
 
@@ -367,6 +465,10 @@ The SDK includes built-in validation for all parameters:
 - Strength must be between 0.0 and 1.0
 - Mask margin must be between 32 and 128
 - Seed image and mask image are required
+
+**Image Upload:**
+- Image parameter is required and cannot be empty
+- Accepts base64 encoded data URI, pure base64, or public image URLs
 
 ## Documentation
 

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-01-09
+
+### Added
+- New `ImageUpload` service class for uploading images to Runware API
+  - Supports multiple image formats: URLs, base64 strings, and data URIs
+  - Returns image UUID for use in other operations (e.g., inpainting)
+  - Includes async support via `runAsync()` method
+  - Comprehensive documentation and examples in README
+
+## [2.2.0] - 2025-12-11
+
 ### Added
 - `model()` method in `TextToImage` and `Inpainting` classes now accepts both `RunwareModel` enum and string values (AIR format), providing more flexibility when specifying models
 
