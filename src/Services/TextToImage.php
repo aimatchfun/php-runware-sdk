@@ -45,6 +45,7 @@ class TextToImage
     private int $deepCacheBranchId = 0;
     private int $clipSkip = 0;
     private ?string $seedImage = null;
+    private array $referenceImages = [];
 
     public function __construct(string $apiKey)
     {
@@ -160,6 +161,12 @@ class TextToImage
 
         if (!empty($this->seedImage)) {
             $requestBody['seedImage'] = $this->seedImage;
+        }
+
+        if (!empty($this->referenceImages)) {
+            $requestBody['inputs'] = [
+                'referenceImages' => $this->referenceImages
+            ];
         }
 
         return $requestBody;
@@ -516,6 +523,38 @@ class TextToImage
     {
         $this->images[] = $image;
 
+        return $this;
+    }
+
+    /**
+     * Adds a reference image for the generation process
+     *
+     * @param string $image The reference image URL or UUID
+     * @return self
+     */
+    public function addReferenceImage(string $image): self
+    {
+        if (empty($image)) {
+            throw new InvalidArgumentException("Reference image cannot be empty");
+        }
+        
+        $this->referenceImages[] = $image;
+        return $this;
+    }
+
+    /**
+     * Sets multiple reference images at once
+     *
+     * @param array $images Array of reference image URLs or UUIDs
+     * @return self
+     */
+    public function referenceImages(array $images): self
+    {
+        if (empty($images)) {
+            throw new InvalidArgumentException("Reference images array cannot be empty");
+        }
+        
+        $this->referenceImages = $images;
         return $this;
     }
 
