@@ -46,13 +46,14 @@ class TextToImage
     private int $clipSkip = 0;
     private ?string $seedImage = null;
     private array $referenceImages = [];
+    private array $disabledFields = [];
 
     public function __construct(string $apiKey)
     {
         $this->apiKey = $apiKey;
     }
 
-        /**
+    /**
      * Generates an image from the provided text prompt
      *
      * @param string $text The text prompt for image generation
@@ -98,12 +99,8 @@ class TextToImage
             'numberResults' => $this->numberResults,
             'scheduler' => $this->scheduler,
             'includeCost' => true,
+            'steps' => $this->steps,
         ];
-
-        // Don't include steps when seedImage is present
-        if (empty($this->seedImage)) {
-            $requestBody['steps'] = $this->steps;
-        }
 
         if (!empty($this->images)) {
             $requestBody['images'] = $this->images;
@@ -130,19 +127,19 @@ class TextToImage
         if ($this->teaCache !== false) {
             $acceleratorOptions['teaCache'] = $this->teaCache;
         }
-        
+
         if ($this->teaCacheDistance !== 0.5) {
             $acceleratorOptions['teaCacheDistance'] = $this->teaCacheDistance;
         }
-        
+
         if ($this->deepCache !== false) {
             $acceleratorOptions['deepCache'] = $this->deepCache;
         }
-        
+
         if ($this->deepCacheInterval !== 3) {
             $acceleratorOptions['deepCacheInterval'] = $this->deepCacheInterval;
         }
-        
+
         if ($this->deepCacheBranchId !== 0) {
             $acceleratorOptions['deepCacheBranchId'] = $this->deepCacheBranchId;
         }
@@ -169,12 +166,16 @@ class TextToImage
             ];
         }
 
+        foreach ($this->disabledFields as $field) {
+            unset($requestBody[$field]);
+        }
+
         return $requestBody;
     }
 
     /**
      * Adds a refiner model to the image generation process
-     * 
+     *
      * @param Refiner $refiner The refiner model to add
      * @return self
      */
@@ -186,7 +187,7 @@ class TextToImage
 
     /**
      * Adds an embedding model to the image generation process
-     * 
+     *
      * @param RunwareModel $embedding The embedding model to add
      * @return self
      */
@@ -198,7 +199,7 @@ class TextToImage
 
     /**
      * Adds a ControlNet model to guide the image generation
-     * 
+     *
      * @param RunwareModel $controlNet The ControlNet model to add
      * @return self
      */
@@ -210,7 +211,7 @@ class TextToImage
 
     /**
      * Adds an IP-Adapter model for image conditioning
-     * 
+     *
      * @param RunwareModel $ipAdapter The IP-Adapter model to add
      * @return self
      */
@@ -537,7 +538,7 @@ class TextToImage
         if (empty($image)) {
             throw new InvalidArgumentException("Reference image cannot be empty");
         }
-        
+
         $this->referenceImages[] = $image;
         return $this;
     }
@@ -553,7 +554,7 @@ class TextToImage
         if (empty($images)) {
             throw new InvalidArgumentException("Reference images array cannot be empty");
         }
-        
+
         $this->referenceImages = $images;
         return $this;
     }
@@ -681,6 +682,29 @@ class TextToImage
     {
         $this->promptWeighting = $weighting->value;
         $this->usePromptWeighting = true;
+        return $this;
+    }
+
+    /**
+     * Disables specific fields from being included in the request body
+     *
+     * @param array|string ...$fields Field names to disable (can be passed as array or multiple arguments)
+     * @return self
+     */
+    public function disableFields(array|string ...$fields): self
+    {
+        $fieldsToDisable = [];
+
+        foreach ($fields as $field) {
+            if (is_array($field)) {
+                $fieldsToDisable = array_merge($fieldsToDisable, $field);
+            } else {
+                $fieldsToDisable[] = $field;
+            }
+        }
+
+        $this->disabledFields = array_unique(array_merge($this->disabledFields, $fieldsToDisable));
+
         return $this;
     }
 }
