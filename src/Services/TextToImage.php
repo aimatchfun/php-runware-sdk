@@ -44,6 +44,7 @@ class TextToImage
     private int $deepCacheInterval = 3;
     private int $deepCacheBranchId = 0;
     private int $clipSkip = 0;
+    private ?string $seedImage = null;
 
     public function __construct(string $apiKey)
     {
@@ -151,6 +152,10 @@ class TextToImage
 
         if ($this->vae !== null) {
             $requestBody['vae'] = $this->vae->value;
+        }
+
+        if (!empty($this->seedImage)) {
+            $requestBody['seedImage'] = $this->seedImage;
         }
 
         return $requestBody;
@@ -454,6 +459,18 @@ class TextToImage
             throw new InvalidArgumentException('CLIP skip must be between 0 and 2');
         }
         $this->clipSkip = $skip;
+        return $this;
+    }
+
+    /**
+     * Sets the seed image for image generation
+     *
+     * @param string $image The image UUID or URL
+     * @return self
+     */
+    public function seedImage(string $image): self
+    {
+        $this->seedImage = $image;
         return $this;
     }
 
