@@ -111,6 +111,35 @@ echo "Image uploaded with UUID: " . $imageUUID;
 **Image Upload Methods:**
 - `uploadFromLocalPath(string $path)`: Upload an image from a local file path. The file is automatically converted to base64 format.
 - `uploadFromURL(string $url)`: Upload an image from a public URL.
+- `image(string $image)`: Upload an image from URL, base64 string, or data URI. Automatically detects the format:
+  - If starts with "http://" or "https://", treats as URL
+  - If starts with "data:", treats as data URI and extracts base64
+  - Otherwise, treats as base64 string
+
+**Example using image() method:**
+
+```php
+use AiMatchFun\PhpRunwareSDK\ImageUpload;
+
+$imageUpload = new ImageUpload('your_api_key');
+
+// Upload from URL
+$imageUUID = $imageUpload
+    ->image('https://example.com/image.png')
+    ->run();
+
+// Upload from base64 string
+$base64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+$imageUUID = $imageUpload
+    ->image($base64Image)
+    ->run();
+
+// Upload from data URI
+$dataURI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+$imageUUID = $imageUpload
+    ->image($dataURI)
+    ->run();
+```
 
 For more details about image upload, see the [Runware Image Upload Documentation](https://runware.ai/docs/en/utilities/image-upload).
 

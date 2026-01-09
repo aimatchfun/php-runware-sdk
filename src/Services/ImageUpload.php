@@ -72,6 +72,46 @@ class ImageUpload
     }
 
     /**
+     * Sets the image to upload from URL, base64 string, or data URI
+     *
+     * Automatically detects the format:
+     * - If starts with "http://" or "https://", treats as URL
+     * - If starts with "data:", treats as data URI and extracts base64
+     * - Otherwise, treats as base64 string
+     *
+     * @param string $image The image URL, base64 string, or data URI
+     * @return self
+     * @throws InvalidArgumentException If the image is empty
+     */
+    public function image(string $image): self
+    {
+        if (empty($image)) {
+            throw new InvalidArgumentException("Image cannot be empty");
+        }
+
+        // Check if it's a URL
+        if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+            $this->image = $image;
+            return $this;
+        }
+
+        // Check if it's a data URI
+        if (str_starts_with($image, 'data:')) {
+            // Extract base64 from data URI (format: data:image/png;base64,<base64>)
+            $parts = explode(',', $image, 2);
+            if (count($parts) === 2) {
+                $this->image = $parts[1];
+                return $this;
+            }
+            throw new InvalidArgumentException("Invalid data URI format");
+        }
+
+        // Treat as base64 string
+        $this->image = $image;
+        return $this;
+    }
+
+    /**
      * Uploads the image to Runware
      *
      * @return string The image UUID returned by the API
@@ -184,7 +224,11 @@ class ImageUpload
             throw new Exception("Invalid response format: missing 'data' field");
         }
 
-        $data = $decoded['data'];
+        if (!isset($decoded['data'][0])) {
+            throw new Exception("Invalid response format: missing first element in 'data' array");
+        }
+
+        $data = $decoded['data'][0];
 
         if (!isset($data['imageUUID'])) {
             throw new Exception("Invalid response format: missing 'imageUUID' in response data");
