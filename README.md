@@ -2,6 +2,31 @@
 
 A PHP wrapper for the Runware AI API, allowing simple and efficient AI image generation.
 
+## 📑 Navigation
+
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+  - [Text to Image](#text-to-image)
+  - [Inpainting](#inpainting)
+  - [Image Upload](#image-upload)
+- [Examples](#examples)
+  - [Image Upload Examples](#image-upload-examples)
+  - [Inpainting Examples](#inpainting-examples)
+  - [Text to Image Generation](#text-to-image-generation-with-different-models)
+  - [Output Types and Formats](#output-types-and-formats)
+  - [Using Different Schedulers](#using-different-schedulers)
+  - [Advanced Configuration](#advanced-configuration)
+  - [Using LoRA Models](#using-lora-models)
+  - [Using Custom Models](#using-custom-models)
+  - [Uploading LoRA Models](#uploading-lora-models)
+  - [Uploading Custom Models](#uploading-custom-models)
+  - [Error Handling](#error-handling)
+  - [Parameter Validation](#parameter-validation)
+- [Documentation](#documentation)
+- [License](#license)
+
+---
+
 ## Installation
 
 ```bash
