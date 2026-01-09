@@ -65,9 +65,6 @@ class PhotoMaker
         if (empty($this->positivePrompt)) {
             throw new InvalidArgumentException("Positive prompt is required");
         }
-        if (empty($this->negativePrompt)) {
-            throw new InvalidArgumentException("Negative prompt is required");
-        }
         if (empty($this->inputImages)) {
             throw new InvalidArgumentException("Input images are required for PhotoMaker");
         }

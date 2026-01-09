@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
+## [2.10.0] - 2026-01-XX
+
+### Changed
+- `negativePrompt()` method in `TextToImage` and `PhotoMaker` classes is now optional
+  - Removed requirement for negative prompt when generating images
+  - Negative prompt will only be included in the request if provided
+  - Updated documentation and examples to reflect this change
+
 ## [2.3.0] - 2026-01-09
 
 ### Added

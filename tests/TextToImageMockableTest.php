@@ -259,5 +259,29 @@ class TextToImageMockableTest extends TestCase
 
         $this->assertEquals('https://example.com/image.png', $result);
     }
+
+    public function testCanRunWithoutNegativePrompt(): void
+    {
+        $mockResponse = new Response(200, [], json_encode([
+            'data' => [
+                [
+                    'taskType' => 'imageInference',
+                    'taskUUID' => 'test-task-uuid',
+                    'imageUUID' => 'test-image-uuid',
+                    'imageURL' => 'https://example.com/image.png',
+                ]
+            ]
+        ]));
+
+        $this->mockHandler->append($mockResponse);
+
+        $result = $this->textToImage
+            ->positivePrompt('A beautiful sunset')
+            ->width(512)
+            ->height(512)
+            ->run();
+
+        $this->assertEquals('https://example.com/image.png', $result);
+    }
 }
 

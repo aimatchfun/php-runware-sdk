@@ -36,6 +36,22 @@ $result = $textToImage
     ->run();
 ```
 
+**Note:** The `negativePrompt()` method is optional. You can generate images without specifying a negative prompt:
+
+```php
+$result = $textToImage
+    ->positivePrompt('A beautiful sunset over a calm ocean')
+    ->height(768)
+    ->width(1024)
+    ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
+    ->steps(30)
+    ->cfgScale(8.5)
+    ->numberResults(1)
+    ->outputType(OutputType::URL)
+    ->outputFormat(OutputFormat::PNG)
+    ->run();
+```
+
 ### Inpainting
 
 Inpainting allows you to selectively edit specific areas of an image by providing a seed image and a mask image:

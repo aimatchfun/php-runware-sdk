@@ -79,9 +79,6 @@ class TextToImage
         if (empty($this->positivePrompt)) {
             throw new InvalidArgumentException("Positive prompt is required");
         }
-        if (empty($this->negativePrompt)) {
-            throw new InvalidArgumentException("Negative prompt is required");
-        }
 
         $requestBody = [
             'taskType' => 'imageInference',
@@ -89,7 +86,6 @@ class TextToImage
             'outputType' => $this->outputType,
             'outputFormat' => $this->outputFormat,
             'positivePrompt' => $this->positivePrompt,
-            'negativePrompt' => $this->negativePrompt,
             'height' => $this->height,
             'width' => $this->width,
             'model' => $this->model,
@@ -101,6 +97,10 @@ class TextToImage
             'includeCost' => true,
             'steps' => $this->steps,
         ];
+
+        if (!empty($this->negativePrompt)) {
+            $requestBody['negativePrompt'] = $this->negativePrompt;
+        }
 
         if (!empty($this->images)) {
             $requestBody['images'] = $this->images;
