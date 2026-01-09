@@ -20,24 +20,54 @@ class ImageUpload
     }
 
     /**
-     * Sets the image to upload
+     * Sets the image to upload from a local file path
      *
-     * Accepts images in the following formats:
-     * - Base64 encoded data URI: data:image/png;base64,iVBORw0KGgo...
-     * - Pure base64: iVBORw0KGgo...
-     * - Public image URL: https://example.com/image.png
+     * Reads the file from the local filesystem and converts it to base64 format.
      *
-     * @param string $image The image data in any of the supported formats
+     * @param string $path The local file path to the image
      * @return self
-     * @throws InvalidArgumentException If the image parameter is empty
+     * @throws InvalidArgumentException If the path is empty or file doesn't exist
+     * @throws Exception If file cannot be read
      */
-    public function image(string $image): self
+    public function uploadFromLocalPath(string $path): self
     {
-        if (empty($image)) {
-            throw new InvalidArgumentException("Image cannot be empty");
+        if (empty($path)) {
+            throw new InvalidArgumentException("Image path cannot be empty");
         }
 
-        $this->image = $image;
+        if (!file_exists($path)) {
+            throw new InvalidArgumentException("Image file not found: {$path}");
+        }
+
+        if (!is_readable($path)) {
+            throw new Exception("Image file is not readable: {$path}");
+        }
+
+        $fileContents = file_get_contents($path);
+        if ($fileContents === false) {
+            throw new Exception("Failed to read image file: {$path}");
+        }
+
+        $base64 = base64_encode($fileContents);
+        $this->image = $base64;
+
+        return $this;
+    }
+
+    /**
+     * Sets the image to upload from a URL
+     *
+     * @param string $url The public URL of the image
+     * @return self
+     * @throws InvalidArgumentException If the URL is empty
+     */
+    public function uploadFromURL(string $url): self
+    {
+        if (empty($url)) {
+            throw new InvalidArgumentException("Image URL cannot be empty");
+        }
+
+        $this->image = $url;
         return $this;
     }
 

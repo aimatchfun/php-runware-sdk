@@ -74,27 +74,43 @@ For more details about inpainting, see the [Runware Inpainting Documentation](ht
 
 ### Image Upload
 
-Image Upload allows you to upload images to the Runware API and receive an image UUID that can be used in other operations like inpainting:
+Image Upload allows you to upload images to the Runware API and receive an image UUID that can be used in other operations like inpainting. The SDK provides two methods for uploading images:
+
+**Upload from Local File Path:**
 
 ```php
 use AiMatchFun\PhpRunwareSDK\ImageUpload;
 
 $imageUpload = new ImageUpload('your_api_key');
 
-// Upload and get the image UUID
+// Upload from a local file path (automatically converts to base64)
 $imageUUID = $imageUpload
-    ->image('https://example.com/image.png') // URL, base64, or data URI
+    ->uploadFromLocalPath('/path/to/image.jpg')
     ->run();
 
 // The returned UUID can be used in other operations
 echo "Image uploaded with UUID: " . $imageUUID;
 ```
 
-**Image Upload Parameters:**
-- `image(string $image)`: The image to upload in one of these formats:
-  - Public image URL: `https://example.com/image.png`
-  - Base64 data URI: `data:image/png;base64,iVBORw0KGgo...`
-  - Pure base64: `iVBORw0KGgo...`
+**Upload from URL:**
+
+```php
+use AiMatchFun\PhpRunwareSDK\ImageUpload;
+
+$imageUpload = new ImageUpload('your_api_key');
+
+// Upload from a public URL
+$imageUUID = $imageUpload
+    ->uploadFromURL('https://example.com/image.png')
+    ->run();
+
+// The returned UUID can be used in other operations
+echo "Image uploaded with UUID: " . $imageUUID;
+```
+
+**Image Upload Methods:**
+- `uploadFromLocalPath(string $path)`: Upload an image from a local file path. The file is automatically converted to base64 format.
+- `uploadFromURL(string $url)`: Upload an image from a public URL.
 
 For more details about image upload, see the [Runware Image Upload Documentation](https://runware.ai/docs/en/utilities/image-upload).
 
@@ -110,32 +126,25 @@ use AiMatchFun\PhpRunwareSDK\ImageUpload;
 $imageUpload = new ImageUpload('your_api_key');
 
 $imageUUID = $imageUpload
-    ->image('https://example.com/my-image.png')
+    ->uploadFromURL('https://example.com/my-image.png')
     ->run();
 
 echo "Image UUID: " . $imageUUID;
 ```
 
-#### Uploading Base64 Encoded Image
+#### Uploading from Local File Path
 
 ```php
 use AiMatchFun\PhpRunwareSDK\ImageUpload;
 
 $imageUpload = new ImageUpload('your_api_key');
 
-// Using pure base64 string
-$base64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-
+// Upload from a local file path (automatically converts to base64)
 $imageUUID = $imageUpload
-    ->image($base64Image)
+    ->uploadFromLocalPath('/path/to/image.jpg')
     ->run();
 
-// Using data URI format
-$dataURI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-
-$imageUUID = $imageUpload
-    ->image($dataURI)
-    ->run();
+echo "Image UUID: " . $imageUUID;
 ```
 
 #### Using Uploaded Image with Inpainting
@@ -149,12 +158,12 @@ use AiMatchFun\PhpRunwareSDK\OutputType;
 // Step 1: Upload the image
 $imageUpload = new ImageUpload('your_api_key');
 $imageUUID = $imageUpload
-    ->image('https://example.com/image.png')
+    ->uploadFromURL('https://example.com/image.png')
     ->run();
 
 // Step 2: Upload the mask image
 $maskUUID = $imageUpload
-    ->image('https://example.com/mask.png')
+    ->uploadFromURL('https://example.com/mask.png')
     ->run();
 
 // Step 3: Use the uploaded images in inpainting
@@ -467,8 +476,9 @@ The SDK includes built-in validation for all parameters:
 - Seed image and mask image are required
 
 **Image Upload:**
-- Image parameter is required and cannot be empty
-- Accepts base64 encoded data URI, pure base64, or public image URLs
+- `uploadFromLocalPath()`: Path cannot be empty, file must exist and be readable
+- `uploadFromURL()`: URL cannot be empty
+- Local files are automatically converted to base64 format
 
 ## Documentation
 
