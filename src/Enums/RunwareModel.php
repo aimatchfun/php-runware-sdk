@@ -31,7 +31,6 @@ enum RunwareModel: string
     case HASSAKU_XL_ILLUSTRIOUS = 'civitai:140272@325904';
     case ILLUSTRIOUS_XL = 'x:42@889818';
     case BABES_BY_STABLE_YOGI_V5 = 'aimatch:1134825@2044007';
-
     case BYTEDANCE_SEEDREAM_45 = 'bytedance:seedream@4.5';
 }
 

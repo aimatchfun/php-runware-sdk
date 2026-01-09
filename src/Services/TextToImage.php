@@ -91,7 +91,6 @@ class TextToImage
             'height' => $this->height,
             'width' => $this->width,
             'model' => $this->model,
-            'steps' => $this->steps,
             'checkNsfw' => $this->nsfw,
             'CFGScale' => $this->CFGScale,
             'clipSkip' => $this->clipSkip,
@@ -99,6 +98,11 @@ class TextToImage
             'scheduler' => $this->scheduler,
             'includeCost' => true,
         ];
+
+        // Don't include steps when seedImage is present
+        if (empty($this->seedImage)) {
+            $requestBody['steps'] = $this->steps;
+        }
 
         if (!empty($this->images)) {
             $requestBody['images'] = $this->images;
