@@ -9,11 +9,12 @@ use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
+use AiMatchFun\PhpRunwareSDK\RunwareResponse;
 use AiMatchFun\PhpRunwareSDK\Scheduler;
 use Exception;
 use InvalidArgumentException;
 
-class TextToImage
+class ImageInference
 {
     private string $apiKey;
     private string $apiUrl = 'https://api.runware.ai/v1';
@@ -56,11 +57,10 @@ class TextToImage
     /**
      * Generates an image from the provided text prompt
      *
-     * @param string $text The text prompt for image generation
-     * @return string The generated image data according to the specified output type
+     * @return RunwareResponse The response containing image data, cost, seed, UUIDs, etc.
      * @throws Exception If API request fails or response is invalid
      */
-    public function run(): string
+    public function run(): RunwareResponse
     {
         $requestBody = $this->mountRequestBody();
 
@@ -590,13 +590,13 @@ class TextToImage
     }
 
     /**
-     * Processes the API response and extracts the appropriate output format
+     * Processes the API response and returns a RunwareResponse DTO
      *
      * @param string $response The raw API response
-     * @return string The processed image data in the requested format
-     * @throws Exception If response processing fails or output type is not found
+     * @return RunwareResponse The response DTO containing all image data
+     * @throws Exception If response processing fails
      */
-    private function handleResponse($response)
+    private function handleResponse($response): RunwareResponse
     {
         $data = json_decode($response, true);
 
@@ -604,21 +604,11 @@ class TextToImage
             throw new Exception("Error decoding JSON response: " . json_last_error_msg());
         }
 
-        if (!isset($data['data'][0])) {
+        if (!isset($data['data']) || !is_array($data['data'])) {
             throw new Exception("API response does not contain data");
         }
 
-        $result = $data['data'][0];
-
-        if ($this->outputType === 'URL' && isset($result['imageURL'])) {
-            return $result['imageURL'];
-        } elseif ($this->outputType === 'base64Data' && isset($result['imageBase64Data'])) {
-            return $result['imageBase64Data'];
-        } elseif ($this->outputType === 'dataURI' && isset($result['imageDataURI'])) {
-            return $result['imageDataURI'];
-        }
-
-        throw new Exception("Requested output type not found in response");
+        return RunwareResponse::fromArray($data);
     }
 
     /**
@@ -669,7 +659,7 @@ class TextToImage
     /**
      * Generates an image from the provided text prompt asynchronously
      *
-     * @return \GuzzleHttp\Promise\PromiseInterface The promise that will resolve to the generated image data
+     * @return \GuzzleHttp\Promise\PromiseInterface The promise that will resolve to RunwareResponse
      * @throws Exception If API request fails or response is invalid
      */
     public function runAsync()

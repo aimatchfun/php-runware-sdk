@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-01-XX
+
+### Changed (Breaking)
+- **BREAKING**: `run()` and `runAsync()` methods now return `RunwareResponse` instead of `string`
+  - All services (`ImageInference`, `Inpainting`, `PhotoMaker`) now return a `RunwareResponse` DTO
+  - The DTO contains structured data: `cost`, `seed`, `imageURL`, `imageUUID`, `taskUUID`
+  - To access image URL: `$response->first()->imageURL` instead of direct string return
+  - Updated all method signatures and return types
+  - This is a breaking change - existing code using `run()` will need to be updated
+
+### Added
+- `RunwareResponse` collection class with Laravel-like methods:
+  - `first()` - Get the first result
+  - `get(int $index)` - Get result at specific index
+  - `eq(int $index)` - Alias for `get()`
+  - `all()` - Get all results as array
+  - `count()` - Count total results
+- `RunwareImageResponse` DTO with all API response fields:
+  - `cost` (float|null)
+  - `seed` (int|null)
+  - `imageURL` (string|null)
+  - `imageUUID` (string)
+  - `taskUUID` (string)
+  - `imageBase64Data` (string|null)
+  - `imageDataURI` (string|null)
+  - `taskType` (string)
+
+### Migration Guide
+**Before (v2.x):**
+```php
+$url = $textToImage->run(); // Returns string directly
+```
+
+**After (v3.0):**
+```php
+$response = $textToImage->run(); // Returns RunwareResponse
+$url = $response->first()->imageURL; // Access via DTO
+// Or use helper method:
+$url = $response->getImageData('URL');
+```
+
 ## [2.10.0] - 2026-01-XX
 
 ### Changed

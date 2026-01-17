@@ -72,5 +72,27 @@ class RunwareResponse
         $first = $this->first();
         return $first?->getImageData($outputType);
     }
+
+    /**
+     * Gets an item at a specific index
+     *
+     * @param int $index The index of the item
+     * @return RunwareImageResponse|null The image response at the index or null if not found
+     */
+    public function get(int $index): ?RunwareImageResponse
+    {
+        return $this->images[$index] ?? null;
+    }
+
+    /**
+     * Gets an item at a specific index (alias for get)
+     *
+     * @param int $index The index of the item
+     * @return RunwareImageResponse|null The image response at the index or null if not found
+     */
+    public function eq(int $index): ?RunwareImageResponse
+    {
+        return $this->get($index);
+    }
 }
 
