@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-01-XX
+
+### Fixed
+- Fixed test classes to return `RunwareResponse` instead of `string` to match v3.0.0 API changes
+  - Updated `ImageInferenceMockable::run()` return type
+  - Updated `ImageInferenceWrapper::run()` return type
+  - Updated all test assertions to work with `RunwareResponse` DTO
+- Fixed `handleResponse()` to validate empty data arrays and throw appropriate exceptions
+
 ## [3.4.0] - 2026-01-XX
 
 ### Changed (Breaking)

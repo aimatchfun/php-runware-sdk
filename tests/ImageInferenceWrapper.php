@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use AiMatchFun\PhpRunwareSDK\ImageInference;
+use AiMatchFun\PhpRunwareSDK\RunwareResponse;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -30,7 +31,7 @@ class ImageInferenceWrapper extends ImageInference
      * Sobrescreve o método run para usar o mock client
      * Como o método post é privado na classe pai, precisamos usar reflection
      */
-    public function run(): string
+    public function run(): RunwareResponse
     {
         if ($this->mockClient === null) {
             // Se não há mock, usar comportamento padrão

@@ -8,6 +8,7 @@ use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\ImageInference;
+use AiMatchFun\PhpRunwareSDK\RunwareResponse;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -33,7 +34,7 @@ class ImageInferenceMockable extends ImageInference
      * Sobrescreve o método run para usar o mock client
      * Como o método post é privado na classe pai, precisamos usar reflection
      */
-    public function run(): string
+    public function run(): RunwareResponse
     {
         if ($this->mockClient === null) {
             // Se não há mock, usar comportamento padrão
@@ -140,7 +141,12 @@ class ImageInferenceMockableTest extends TestCase
             ->outputFormat(OutputFormat::PNG)
             ->run();
 
-        $this->assertEquals('https://example.com/image.png', $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals('https://example.com/image.png', $first->imageURL);
+        $this->assertEquals(12345, $first->seed);
+        $this->assertEquals(0.5, $first->cost);
     }
 
     public function testRunReturnsBase64DataWhenOutputTypeIsBase64(): void
@@ -166,7 +172,10 @@ class ImageInferenceMockableTest extends TestCase
             ->outputType(OutputType::BASE64_DATA)
             ->run();
 
-        $this->assertEquals($base64Data, $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals($base64Data, $first->imageBase64Data);
     }
 
     public function testRunThrowsExceptionOnApiError(): void
@@ -232,7 +241,10 @@ class ImageInferenceMockableTest extends TestCase
             ->nsfw(false)
             ->run();
 
-        $this->assertEquals('https://example.com/image.png', $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals('https://example.com/image.png', $first->imageURL);
     }
 
     public function testCanAddLora(): void
@@ -257,7 +269,10 @@ class ImageInferenceMockableTest extends TestCase
             ->addLora('civitai:368139@411375', 0.8)
             ->run();
 
-        $this->assertEquals('https://example.com/image.png', $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals('https://example.com/image.png', $first->imageURL);
     }
 
     public function testCanRunWithoutNegativePrompt(): void
@@ -281,7 +296,10 @@ class ImageInferenceMockableTest extends TestCase
             ->height(512)
             ->run();
 
-        $this->assertEquals('https://example.com/image.png', $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals('https://example.com/image.png', $first->imageURL);
     }
 }
 

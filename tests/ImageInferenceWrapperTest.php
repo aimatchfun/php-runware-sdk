@@ -7,6 +7,7 @@ namespace Tests;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\OutputType;
+use AiMatchFun\PhpRunwareSDK\RunwareResponse;
 use Exception;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +48,12 @@ class ImageInferenceWrapperTest extends TestCase
             ->outputFormat(OutputFormat::PNG)
             ->run();
 
-        $this->assertEquals('https://example.com/image.png', $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals('https://example.com/image.png', $first->imageURL);
+        $this->assertEquals(12345, $first->seed);
+        $this->assertEquals(0.5, $first->cost);
     }
 
     public function testRunReturnsBase64DataWhenOutputTypeIsBase64(): void
@@ -75,7 +81,10 @@ class ImageInferenceWrapperTest extends TestCase
             ->outputType(OutputType::BASE64_DATA)
             ->run();
 
-        $this->assertEquals($base64Data, $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals($base64Data, $first->imageBase64Data);
     }
 
     public function testRunThrowsExceptionOnApiError(): void
@@ -128,7 +137,10 @@ class ImageInferenceWrapperTest extends TestCase
             ->nsfw(false)
             ->run();
 
-        $this->assertEquals('https://example.com/image.png', $result);
+        $this->assertInstanceOf(RunwareResponse::class, $result);
+        $first = $result->first();
+        $this->assertNotNull($first);
+        $this->assertEquals('https://example.com/image.png', $first->imageURL);
     }
 }
 

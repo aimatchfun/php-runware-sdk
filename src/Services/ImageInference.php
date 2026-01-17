@@ -608,6 +608,10 @@ class ImageInference
             throw new Exception("API response does not contain data");
         }
 
+        if (empty($data['data'])) {
+            throw new Exception("API response does not contain data");
+        }
+
         return RunwareResponse::fromArray($data);
     }
 
