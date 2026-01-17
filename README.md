@@ -33,6 +33,30 @@ A PHP wrapper for the Runware AI API, allowing simple and efficient AI image gen
 composer require aimatchfun/php-runware-sdk
 ```
 
+## Response Format
+
+All service methods (`run()` and `runAsync()`) return a `RunwareResponse` object that contains structured data from the API. The `RunwareResponse` class provides convenient methods to access the results:
+
+```php
+use AiMatchFun\PhpRunwareSDK\RunwareResponse;
+use AiMatchFun\PhpRunwareSDK\RunwareImageResponse;
+
+$result = $imageInference
+    ->positivePrompt('A beautiful sunset')
+    ->run();
+
+// $result is a RunwareResponse instance
+$firstImage = $result->first(); // Get the first RunwareImageResponse
+$imageURL = $result->first()?->imageURL; // Access image URL directly
+$allImages = $result->all(); // Get all images as array
+$count = $result->count(); // Get number of results
+
+// Or use helper method to get image data by output type
+$imageURL = $result->getImageData('URL'); // Get URL, base64Data, or dataURI
+```
+
+**Important:** The `ImageUpload` service is an exception - its `run()` method returns a `string` (the image UUID) instead of `RunwareResponse`, as it's designed to return just the UUID for use in other operations.
+
 ## Basic Usage
 
 ### Text to Image
@@ -59,6 +83,11 @@ $result = $imageInference
     ->outputFormat(OutputFormat::PNG)
     ->negativePrompt('low quality, blurred')
     ->run();
+
+// $result is a RunwareResponse instance
+$imageURL = $result->first()?->imageURL; // Get the image URL
+// Or use helper method:
+$imageURL = $result->getImageData('URL');
 ```
 
 **Note:** The `negativePrompt()` method is optional. You can generate images without specifying a negative prompt:
@@ -75,6 +104,9 @@ $result = $imageInference
     ->outputType(OutputType::URL)
     ->outputFormat(OutputFormat::PNG)
     ->run();
+
+// $result is a RunwareResponse instance
+$imageURL = $result->first()?->imageURL;
 ```
 
 ### Inpainting
@@ -100,6 +132,9 @@ $result = $inpainting
     ->height(1024)
     ->outputType(OutputType::URL)
     ->run();
+
+// $result is a RunwareResponse instance
+$inpaintedImageURL = $result->first()?->imageURL;
 ```
 
 **Inpainting Parameters:**
@@ -246,9 +281,10 @@ $result = $inpainting
     ->strength(0.8)
     ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
     ->outputType(OutputType::URL)
-    ->run();
+        ->run();
 
-echo "Inpainted image: " . $result;
+// $result is a RunwareResponse instance
+echo "Inpainted image: " . $result->first()?->imageURL;
 ```
 
 ### Inpainting Examples
@@ -342,6 +378,7 @@ $result = $imageInference
     ->outputType(OutputType::URL)
     ->outputFormat(OutputFormat::PNG)
     ->run();
+$imageURL = $result->getImageData('URL'); // Get URL from RunwareResponse
 
 // Get result as base64 data
 $result = $imageInference
@@ -349,6 +386,7 @@ $result = $imageInference
     ->outputType(OutputType::BASE64_DATA)
     ->outputFormat(OutputFormat::JPG)
     ->run();
+$base64Data = $result->getImageData('base64Data'); // Get base64 from RunwareResponse
 
 // Get result as data URI
 $result = $imageInference
@@ -356,6 +394,7 @@ $result = $imageInference
     ->outputType(OutputType::DATA_URI)
     ->outputFormat(OutputFormat::WEBP)
     ->run();
+$dataURI = $result->getImageData('dataURI'); // Get data URI from RunwareResponse
 ```
 
 ### Using Different Schedulers
