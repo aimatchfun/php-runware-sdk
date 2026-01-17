@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/en-US/
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-01-XX
+
+### Changed (Breaking)
+- **BREAKING**: Renamed `TextToImage` class to `ImageInference`
+  - All references to `TextToImage` must be updated to `ImageInference`
+  - Example: `new TextToImage($apiKey)` → `new ImageInference($apiKey)`
+  - Updated all related test classes and wrappers:
+    - `TextToImageWrapper` → `ImageInferenceWrapper`
+    - `TextToImageTest` → `ImageInferenceTest`
+    - `TextToImageMockable` → `ImageInferenceMockable`
+  - Updated documentation and examples
+  - This is a breaking change - existing code using `TextToImage` will need to be updated
+
+### Added
+- Added `uploadFromLocalPath()` method to `ImageUpload` class for uploading images from local file paths
+- Added `uploadFromURL()` method to `ImageUpload` class for uploading images from URLs
+- Added `image()` method to `ImageUpload` class that automatically detects format (URL, base64, or data URI)
+
 ## [3.0.0] - 2026-01-XX
 
 ### Changed (Breaking)

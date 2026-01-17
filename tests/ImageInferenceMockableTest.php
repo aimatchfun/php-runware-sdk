@@ -7,7 +7,7 @@ namespace Tests;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\OutputType;
-use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\ImageInference;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -18,9 +18,9 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * Testable version of TextToImage that allows HTTP client injection
+ * Testable version of ImageInference that allows HTTP client injection
  */
-class TextToImageMockable extends TextToImage
+class ImageInferenceMockable extends ImageInference
 {
     private ?Client $mockClient = null;
 
@@ -41,7 +41,7 @@ class TextToImageMockable extends TextToImage
         }
 
         // Usar reflection para acessar métodos e propriedades privadas
-        $reflection = new ReflectionClass(\AiMatchFun\PhpRunwareSDK\TextToImage::class);
+        $reflection = new ReflectionClass(\AiMatchFun\PhpRunwareSDK\ImageInference::class);
         
         // Acessar propriedades privadas da classe pai
         $apiUrlProperty = $reflection->getProperty('apiUrl');
@@ -92,20 +92,20 @@ class TextToImageMockable extends TextToImage
     }
 }
 
-class TextToImageMockableTest extends TestCase
+class ImageInferenceMockableTest extends TestCase
 {
-    private TextToImageMockable $textToImage;
+    private ImageInferenceMockable $imageInference;
     private MockHandler $mockHandler;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->textToImage = new TextToImageMockable('test-api-key');
+        $this->imageInference = new ImageInferenceMockable('test-api-key');
         $this->mockHandler = new MockHandler();
         
         $handlerStack = HandlerStack::create($this->mockHandler);
         $mockClient = new Client(['handler' => $handlerStack]);
-        $this->textToImage->setMockClient($mockClient);
+        $this->imageInference->setMockClient($mockClient);
     }
 
     public function testRunReturnsImageUrlWhenOutputTypeIsUrl(): void
@@ -126,8 +126,8 @@ class TextToImageMockableTest extends TestCase
 
         $this->mockHandler->append($mockResponse);
 
-        // Configure the textToImage instance
-        $result = $this->textToImage
+        // Configure the imageInference instance
+        $result = $this->imageInference
             ->positivePrompt('A beautiful sunset')
             ->negativePrompt('blur')
             ->width(512)
@@ -160,7 +160,7 @@ class TextToImageMockableTest extends TestCase
 
         $this->mockHandler->append($mockResponse);
 
-        $result = $this->textToImage
+        $result = $this->imageInference
             ->positivePrompt('A beautiful landscape')
             ->negativePrompt('blur')
             ->outputType(OutputType::BASE64_DATA)
@@ -180,7 +180,7 @@ class TextToImageMockableTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Runware API Error');
 
-        $this->textToImage
+        $this->imageInference
             ->positivePrompt('A beautiful sunset')
             ->negativePrompt('blur')
             ->run();
@@ -197,7 +197,7 @@ class TextToImageMockableTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('API response does not contain data');
 
-        $this->textToImage
+        $this->imageInference
             ->positivePrompt('A beautiful sunset')
             ->negativePrompt('blur')
             ->run();
@@ -218,7 +218,7 @@ class TextToImageMockableTest extends TestCase
 
         $this->mockHandler->append($mockResponse);
 
-        $result = $this->textToImage
+        $result = $this->imageInference
             ->positivePrompt('A beautiful sunset')
             ->negativePrompt('blur, low quality')
             ->width(1024)
@@ -250,7 +250,7 @@ class TextToImageMockableTest extends TestCase
 
         $this->mockHandler->append($mockResponse);
 
-        $result = $this->textToImage
+        $result = $this->imageInference
             ->positivePrompt('A beautiful portrait')
             ->negativePrompt('blur')
             ->addLora('civitai:927305@1037996', 1.0)
@@ -275,7 +275,7 @@ class TextToImageMockableTest extends TestCase
 
         $this->mockHandler->append($mockResponse);
 
-        $result = $this->textToImage
+        $result = $this->imageInference
             ->positivePrompt('A beautiful sunset')
             ->width(512)
             ->height(512)

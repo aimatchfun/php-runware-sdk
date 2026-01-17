@@ -7,7 +7,7 @@ namespace Tests;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\OutputType;
-use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\ImageInference;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -17,15 +17,15 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 
-class TextToImageTest extends TestCase
+class ImageInferenceTest extends TestCase
 {
-    private TextToImage $textToImage;
+    private ImageInference $imageInference;
     private MockHandler $mockHandler;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->textToImage = new TextToImage('test-api-key');
+        $this->imageInference = new ImageInference('test-api-key');
         $this->mockHandler = new MockHandler();
     }
 
@@ -40,103 +40,103 @@ class TextToImageTest extends TestCase
         $this->mockHandler->append($response);
 
         // Use reflection to replace the post method
-        $reflection = new ReflectionClass($this->textToImage);
+        $reflection = new ReflectionClass($this->imageInference);
         $postMethod = $reflection->getMethod('post');
         $postMethod->setAccessible(true);
 
         // Create a closure that uses our mock client
-        $originalPost = $postMethod->getClosure($this->textToImage);
+        $originalPost = $postMethod->getClosure($this->imageInference);
         
         // Replace the post method to use our mock
-        $textToImageReflection = new ReflectionClass($this->textToImage);
-        $textToImageReflection->setStaticPropertyValue('mockClient', $mockClient);
+        $imageInferenceReflection = new ReflectionClass($this->imageInference);
+        $imageInferenceReflection->setStaticPropertyValue('mockClient', $mockClient);
     }
 
     public function testCanSetPositivePrompt(): void
     {
-        $result = $this->textToImage->positivePrompt('A beautiful sunset');
+        $result = $this->imageInference->positivePrompt('A beautiful sunset');
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testCanSetNegativePrompt(): void
     {
-        $result = $this->textToImage->negativePrompt('blur, low quality');
+        $result = $this->imageInference->negativePrompt('blur, low quality');
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testCanSetWidth(): void
     {
-        $result = $this->textToImage->width(512);
+        $result = $this->imageInference->width(512);
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testThrowsExceptionForInvalidWidth(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->textToImage->width(100); // Invalid: not divisible by 64
+        $this->imageInference->width(100); // Invalid: not divisible by 64
     }
 
     public function testCanSetHeight(): void
     {
-        $result = $this->textToImage->height(768);
+        $result = $this->imageInference->height(768);
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testCanSetModel(): void
     {
-        $result = $this->textToImage->model(RunwareModel::REAL_DREAM_SDXL_PONY_14);
+        $result = $this->imageInference->model(RunwareModel::REAL_DREAM_SDXL_PONY_14);
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testCanSetSteps(): void
     {
-        $result = $this->textToImage->steps(30);
+        $result = $this->imageInference->steps(30);
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testThrowsExceptionForInvalidSteps(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->textToImage->steps(101); // Invalid: must be between 1 and 100
+        $this->imageInference->steps(101); // Invalid: must be between 1 and 100
     }
 
     public function testCanSetCfgScale(): void
     {
-        $result = $this->textToImage->cfgScale(7.5);
+        $result = $this->imageInference->cfgScale(7.5);
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testCanSetOutputType(): void
     {
-        $result = $this->textToImage->outputType(OutputType::URL);
+        $result = $this->imageInference->outputType(OutputType::URL);
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testCanSetOutputFormat(): void
     {
-        $result = $this->textToImage->outputFormat(OutputFormat::PNG);
+        $result = $this->imageInference->outputFormat(OutputFormat::PNG);
         
-        $this->assertSame($this->textToImage, $result);
+        $this->assertSame($this->imageInference, $result);
     }
 
     public function testCanGenerateJsonConfiguration(): void
     {
-        $this->textToImage
+        $this->imageInference
             ->positivePrompt('A beautiful landscape')
             ->negativePrompt('blur')
             ->width(512)
             ->height(512)
             ->steps(20);
 
-        $json = $this->textToImage->toJson(true);
+        $json = $this->imageInference->toJson(true);
         
         $this->assertIsString($json);
         $this->assertStringContainsString('positivePrompt', $json);
@@ -146,9 +146,9 @@ class TextToImageTest extends TestCase
     public function testRunReturnsImageUrlWhenOutputTypeIsUrl(): void
     {
         // Este teste está incompleto e não pode ser facilmente testado sem mock
-        // Use TextToImageWrapperTest ou TextToImageMockableTest para testes completos
+        // Use ImageInferenceWrapperTest ou ImageInferenceMockableTest para testes completos
         // Este teste foi removido para evitar chamadas reais à API
-        $this->markTestSkipped('Use TextToImageWrapperTest para testes com mocks');
+        $this->markTestSkipped('Use ImageInferenceWrapperTest para testes com mocks');
     }
 
     /**

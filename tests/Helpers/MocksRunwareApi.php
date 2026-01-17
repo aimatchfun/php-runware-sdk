@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Helpers;
 
-use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\ImageInference;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -13,26 +13,26 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * Trait para facilitar o mock de chamadas HTTP no TextToImage
+ * Trait para facilitar o mock de chamadas HTTP no ImageInference
  */
 trait MocksRunwareApi
 {
     /**
-     * Cria uma instância de TextToImage com um mock HTTP client
+     * Cria uma instância de ImageInference com um mock HTTP client
      */
-    protected function createTextToImageWithMock(string $apiKey = 'test-api-key'): array
+    protected function createImageInferenceWithMock(string $apiKey = 'test-api-key'): array
     {
         $mockHandler = new MockHandler();
         $handlerStack = HandlerStack::create($mockHandler);
         $mockClient = new Client(['handler' => $handlerStack]);
 
-        $textToImage = new TextToImage($apiKey);
+        $imageInference = new ImageInference($apiKey);
 
         // Use reflection to inject mock client
-        $reflection = new ReflectionClass($textToImage);
+        $reflection = new ReflectionClass($imageInference);
         
         // Create a wrapper that intercepts HTTP calls
-        return [$textToImage, $mockHandler, $mockClient];
+        return [$imageInference, $mockHandler, $mockClient];
     }
 
     /**

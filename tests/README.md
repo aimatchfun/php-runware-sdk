@@ -6,20 +6,20 @@ Este guia explica como testar o SDK sem fazer chamadas reais à API da Runware, 
 
 Os testes estão organizados da seguinte forma:
 
-- `TextToImageWrapper.php` - Classe wrapper que permite injetar um mock HTTP client
-- `TextToImageWrapperTest.php` - Exemplos de testes usando o wrapper
+- `ImageInferenceWrapper.php` - Classe wrapper que permite injetar um mock HTTP client
+- `ImageInferenceWrapperTest.php` - Exemplos de testes usando o wrapper
 - `Helpers/MocksRunwareApi.php` - Trait com helpers para criar mocks
 
 ## Como Usar
 
-### Opção 1: Usando TextToImageWrapper (Recomendado)
+### Opção 1: Usando ImageInferenceWrapper (Recomendado)
 
 ```php
-use Tests\TextToImageWrapper;
+use Tests\ImageInferenceWrapper;
 use GuzzleHttp\Psr7\Response;
 
 // Criar instância com mock handler
-[$textToImage, $mockHandler] = TextToImageWrapper::withMockHandler();
+[$imageInference, $mockHandler] = ImageInferenceWrapper::withMockHandler();
 
 // Configurar resposta mockada
 $mockResponse = new Response(200, [], json_encode([
@@ -38,7 +38,7 @@ $mockResponse = new Response(200, [], json_encode([
 $mockHandler->append($mockResponse);
 
 // Usar normalmente
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A beautiful sunset')
     ->negativePrompt('blur')
     ->width(512)
@@ -56,21 +56,21 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Tests\TextToImageWrapper;
+use Tests\ImageInferenceWrapper;
 
 $mockHandler = new MockHandler();
 $handlerStack = HandlerStack::create($mockHandler);
 $mockClient = new Client(['handler' => $handlerStack]);
 
-$textToImage = new TextToImageWrapper('test-api-key');
-$textToImage->setMockClient($mockClient);
+$imageInference = new ImageInferenceWrapper('test-api-key');
+$imageInference->setMockClient($mockClient);
 
 // Adicionar respostas mockadas
 $mockHandler->append(new Response(200, [], json_encode([
     'data' => [['imageURL' => 'https://example.com/image.png']]
 ])));
 
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('Test')
     ->negativePrompt('blur')
     ->run();
@@ -122,7 +122,7 @@ $response = new Response(400, [], json_encode([
 vendor/bin/phpunit
 
 # Executar um teste específico
-vendor/bin/phpunit tests/TextToImageWrapperTest.php
+vendor/bin/phpunit tests/ImageInferenceWrapperTest.php
 
 # Com cobertura de código
 vendor/bin/phpunit --coverage-text
@@ -130,7 +130,7 @@ vendor/bin/phpunit --coverage-text
 
 ## Notas Importantes
 
-1. **Não use em produção**: O `TextToImageWrapper` é apenas para testes. Use `TextToImage` diretamente em produção.
+1. **Não use em produção**: O `ImageInferenceWrapper` é apenas para testes. Use `ImageInference` diretamente em produção.
 
 2. **API Key**: Use qualquer string como API key nos testes, pois não será validada.
 

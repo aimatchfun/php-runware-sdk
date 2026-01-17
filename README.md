@@ -38,16 +38,16 @@ composer require aimatchfun/php-runware-sdk
 ### Text to Image
 
 ```php
-use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\ImageInference;
 use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\Scheduler;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 
-$textToImage = new TextToImage('your_api_key');
+$imageInference = new ImageInference('your_api_key');
 
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A beautiful sunset over a calm ocean')
     ->height(768)
     ->width(1024)
@@ -64,7 +64,7 @@ $result = $textToImage
 **Note:** The `negativePrompt()` method is optional. You can generate images without specifying a negative prompt:
 
 ```php
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A beautiful sunset over a calm ocean')
     ->height(768)
     ->width(1024)
@@ -312,19 +312,19 @@ $result = $inpainting
 ### Text to Image Generation with Different Models
 
 ```php
-use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\ImageInference;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 
-$textToImage = new TextToImage('your_api_key');
+$imageInference = new ImageInference('your_api_key');
 
 // Using Pony Realism model
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A serene mountain landscape at sunset')
     ->model(RunwareModel::PONY_REALISM)
     ->run();
 
 // Using Goddess of Realism model
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A portrait of a young woman')
     ->model(RunwareModel::GODDESS_OF_REALISM)
     ->run();
@@ -337,21 +337,21 @@ use AiMatchFun\PhpRunwareSDK\OutputType;
 use AiMatchFun\PhpRunwareSDK\OutputFormat;
 
 // Get result as URL
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A cyberpunk city at night')
     ->outputType(OutputType::URL)
     ->outputFormat(OutputFormat::PNG)
     ->run();
 
 // Get result as base64 data
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('An abstract painting')
     ->outputType(OutputType::BASE64_DATA)
     ->outputFormat(OutputFormat::JPG)
     ->run();
 
 // Get result as data URI
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A fantasy landscape')
     ->outputType(OutputType::DATA_URI)
     ->outputFormat(OutputFormat::WEBP)
@@ -364,19 +364,19 @@ $result = $textToImage
 use AiMatchFun\PhpRunwareSDK\Scheduler;
 
 // Using DPM++ 2M scheduler
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A beautiful landscape')
     ->scheduler(Scheduler::DPM_PLUS_PLUS_2M)
     ->run();
 
 // Using Euler scheduler
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A sci-fi scene')
     ->scheduler(Scheduler::EULER)
     ->run();
 
 // Using Karras scheduler
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('An artistic portrait')
     ->scheduler(Scheduler::DPM_PLUS_PLUS_KARRAS)
     ->run();
@@ -388,7 +388,7 @@ $result = $textToImage
 use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 
 // Using advanced settings with prompt weighting
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A magical forest scene')
     ->negativePrompt('blurry, low quality, distorted')
     ->height(1024)
@@ -403,7 +403,7 @@ $result = $textToImage
     ->run();
 
 // Using acceleration features
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A fantasy landscape')
     ->teaCache(true)
     ->teaCacheDistance(0.5)
@@ -416,7 +416,7 @@ $result = $textToImage
 
 ```php
 // Using multiple LoRA models with different weights
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A beautiful portrait')
     ->addLora('civitai:927305@1037996', 1.0)  // First LoRA with weight 1.0
     ->addLora('civitai:368139@411375', 0.8)   // Second LoRA with weight 0.8
@@ -424,7 +424,7 @@ $result = $textToImage
     ->run();
 
 // Using a single LoRA model
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A fantasy character')
     ->addLora('civitai:927305@1037996', 0.7)  // Using LoRA with weight 0.7
     ->run();
@@ -436,19 +436,19 @@ $result = $textToImage
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 
 // Using a specific model version with ENUM
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A beautiful landscape')
     ->model(RunwareModel::REAL_DREAM_SDXL_PONY_14)
     ->run();
 
 // Using different model variants with ENUM
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A portrait photo')
     ->model(RunwareModel::REAL_DREAM_SDXL_PONY_11)
     ->run();
 
 // Using model with string directly (AIR format)
-$result = $textToImage
+$result = $imageInference
     ->positivePrompt('A fantasy scene')
     ->model('civitai:618692@691639') // Direct AIR string
     ->run();
@@ -515,7 +515,7 @@ The upload methods accept the following parameters:
 use Exception;
 
 try {
-    $result = $textToImage
+    $result = $imageInference
         ->positivePrompt('A beautiful landscape')
         ->run();
 } catch (Exception $e) {
@@ -527,7 +527,7 @@ try {
 
 The SDK includes built-in validation for all parameters:
 
-**TextToImage:**
+**ImageInference:**
 - Height and width must be between 128 and 2048 and divisible by 64
 - Steps must be between 1 and 100
 - CFG Scale must be between 0 and 30

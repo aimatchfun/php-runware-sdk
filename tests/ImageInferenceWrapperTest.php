@@ -11,11 +11,11 @@ use Exception;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
-class TextToImageWrapperTest extends TestCase
+class ImageInferenceWrapperTest extends TestCase
 {
     public function testRunReturnsImageUrlWhenOutputTypeIsUrl(): void
     {
-        [$textToImage, $mockHandler] = TextToImageWrapper::withMockHandler();
+        [$imageInference, $mockHandler] = ImageInferenceWrapper::withMockHandler();
 
         // Mock API response
         $mockResponse = new Response(200, [], json_encode([
@@ -34,7 +34,7 @@ class TextToImageWrapperTest extends TestCase
         $mockHandler->append($mockResponse);
 
         // Configure and run
-        $result = $textToImage
+        $result = $imageInference
             ->positivePrompt('A beautiful sunset')
             ->negativePrompt('blur')
             ->width(512)
@@ -52,7 +52,7 @@ class TextToImageWrapperTest extends TestCase
 
     public function testRunReturnsBase64DataWhenOutputTypeIsBase64(): void
     {
-        [$textToImage, $mockHandler] = TextToImageWrapper::withMockHandler();
+        [$imageInference, $mockHandler] = ImageInferenceWrapper::withMockHandler();
 
         $base64Data = base64_encode('fake-image-data');
 
@@ -69,7 +69,7 @@ class TextToImageWrapperTest extends TestCase
 
         $mockHandler->append($mockResponse);
 
-        $result = $textToImage
+        $result = $imageInference
             ->positivePrompt('A beautiful landscape')
             ->negativePrompt('blur')
             ->outputType(OutputType::BASE64_DATA)
@@ -80,7 +80,7 @@ class TextToImageWrapperTest extends TestCase
 
     public function testRunThrowsExceptionOnApiError(): void
     {
-        [$textToImage, $mockHandler] = TextToImageWrapper::withMockHandler();
+        [$imageInference, $mockHandler] = ImageInferenceWrapper::withMockHandler();
 
         $mockResponse = new Response(400, [], json_encode([
             'error' => 'Invalid API key'
@@ -91,7 +91,7 @@ class TextToImageWrapperTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Runware API Error');
 
-        $textToImage
+        $imageInference
             ->positivePrompt('A beautiful sunset')
             ->negativePrompt('blur')
             ->run();
@@ -99,7 +99,7 @@ class TextToImageWrapperTest extends TestCase
 
     public function testCanChainMultipleMethods(): void
     {
-        [$textToImage, $mockHandler] = TextToImageWrapper::withMockHandler();
+        [$imageInference, $mockHandler] = ImageInferenceWrapper::withMockHandler();
 
         $mockResponse = new Response(200, [], json_encode([
             'data' => [
@@ -114,7 +114,7 @@ class TextToImageWrapperTest extends TestCase
 
         $mockHandler->append($mockResponse);
 
-        $result = $textToImage
+        $result = $imageInference
             ->positivePrompt('A beautiful sunset')
             ->negativePrompt('blur, low quality')
             ->width(1024)

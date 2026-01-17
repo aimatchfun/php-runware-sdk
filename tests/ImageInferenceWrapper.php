@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use AiMatchFun\PhpRunwareSDK\TextToImage;
+use AiMatchFun\PhpRunwareSDK\ImageInference;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -12,12 +12,12 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * Wrapper testável para TextToImage que permite injetar um mock HTTP client
+ * Wrapper testável para ImageInference que permite injetar um mock HTTP client
  * 
- * Esta classe permite testar o TextToImage sem fazer chamadas reais à API
+ * Esta classe permite testar o ImageInference sem fazer chamadas reais à API
  * usando reflection para substituir o método privado post()
  */
-class TextToImageWrapper extends TextToImage
+class ImageInferenceWrapper extends ImageInference
 {
     private ?Client $mockClient = null;
 
@@ -38,7 +38,7 @@ class TextToImageWrapper extends TextToImage
         }
 
         // Usar reflection para acessar métodos e propriedades privadas
-        $reflection = new ReflectionClass(\AiMatchFun\PhpRunwareSDK\TextToImage::class);
+        $reflection = new ReflectionClass(\AiMatchFun\PhpRunwareSDK\ImageInference::class);
         
         // Acessar propriedades privadas da classe pai
         $apiUrlProperty = $reflection->getProperty('apiUrl');
