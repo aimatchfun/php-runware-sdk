@@ -10,6 +10,7 @@ use AiMatchFun\PhpRunwareSDK\OutputFormat;
 use AiMatchFun\PhpRunwareSDK\RunwareModel;
 use AiMatchFun\PhpRunwareSDK\RunwareResponse;
 use AiMatchFun\PhpRunwareSDK\Scheduler;
+use AiMatchFun\PhpRunwareSDK\PromptWeighting;
 use Exception;
 use InvalidArgumentException;
 
@@ -30,7 +31,9 @@ class PhotoMaker
     private bool $nsfw = false;
     private string $scheduler = Scheduler::EULER_A->value;
     private int $clipSkip = 0;
-    
+    private string $promptWeighting = 'sdEmbeds';
+    private bool $usePromptWeighting = false;
+
     // PhotoMaker specific properties
     private array $inputImages = [];
     private string $style = 'photographic';
@@ -94,6 +97,10 @@ class PhotoMaker
             'strength' => $this->strength,
             'includeCost' => true,
         ];
+
+        if ($this->usePromptWeighting) {
+            $requestBody['promptWeighting'] = $this->promptWeighting;
+        }
 
         return $requestBody;
     }
@@ -193,6 +200,19 @@ class PhotoMaker
     public function scheduler(Scheduler $scheduler): self
     {
         $this->scheduler = $scheduler->value;
+        return $this;
+    }
+
+    /**
+     * Sets the prompt weighting method for text encoding
+     *
+     * @param PromptWeighting $weighting The prompt weighting method (sdEmbeds or compel)
+     * @return self
+     */
+    public function promptWeighting(PromptWeighting $weighting): self
+    {
+        $this->promptWeighting = $weighting->value;
+        $this->usePromptWeighting = true;
         return $this;
     }
 
