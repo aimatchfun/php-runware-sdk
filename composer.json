@@ -1,6 +1,6 @@
 {
   "name": "aimatchfun/php-runware-sdk",
-  "version": "3.6.0",
+  "version": "4.0.0",
   "description": "PHP SDK for Runware AI - Powerful image generation and manipulation",
   "type": "library",
   "keywords": ["runware", "ai", "image-generation", "artificial-intelligence", "php", "sdk"],
